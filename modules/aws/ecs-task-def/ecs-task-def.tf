@@ -4,12 +4,12 @@ resource "aws_ecs_task_definition" "this" {
   [
     {
       "name": "${var.name}",
-      "image": "944706592399.dkr.ecr.us-west-2.amazonaws.com/my-first-ecr-repo",
+      "image": var.image
       "essential": true,
       "portMappings": [
         {
-          "containerPort": 80,
-          "hostPort": 80
+          "containerPort": var.containerport
+          "hostPort": var.hostport
         }
       ],
       "memory": 512,
