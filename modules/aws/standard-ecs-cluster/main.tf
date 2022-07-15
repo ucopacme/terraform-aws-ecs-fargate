@@ -7,7 +7,7 @@ module "ecs"{
 
 module "ecs-task-def" {
     source = "../ecs-task-def"
-    name = join("-", [var.name, "ecs-task-def"])
     containerport = 80
     hostport = 80
+    image = var.image
 }
