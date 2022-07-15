@@ -64,21 +64,21 @@ resource "aws_ecs_cluster" "this" {
   name = "${var.service_name}_cluster"
 }
 
-resource "aws_security_group" "ecs" {
-  name   = "${var.service_name}-allow-ecs"
-  vpc_id = "vpc-06a0bfef01b9d0e7b"
+# resource "aws_security_group" "ecs" {
+#   name   = "${var.service_name}-allow-ecs"
+#   vpc_id = "vpc-06a0bfef01b9d0e7b"
 
-  ingress {
-    from_port       = 0
-    protocol        = "-1"
-    to_port         = 0
-    security_groups = ["${aws_security_group.alb.id}"]
-  }
+#   ingress {
+#     from_port       = 0
+#     protocol        = "-1"
+#     to_port         = 0
+#     security_groups = ["${aws_security_group.alb.id}"]
+#   }
 
-  egress {
-    from_port   = 0
-    protocol    = "-1"
-    to_port     = 0
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
+#   egress {
+#     from_port   = 0
+#     protocol    = "-1"
+#     to_port     = 0
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+# }
