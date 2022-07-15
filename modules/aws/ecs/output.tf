@@ -13,7 +13,7 @@ output "cluster_arn" {
   value       = aws_ecs_cluster.this.arn
 }
 
-output "iam_role_arn" {
+output "execution_role" {
   description = "ARN of IAM role"
   value       = aws_iam_role.execution_role.arn
 }
