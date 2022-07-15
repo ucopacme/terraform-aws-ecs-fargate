@@ -1,15 +1,14 @@
-
-output "cluster_arn" {
-  description = "ARN that identifies the cluster"
-  value       = try(aws_ecs_cluster.this[0].arn, null)
-}
-
 output "cluster_id" {
-  description = "ID that identifies the cluster"
-  value       = try(aws_ecs_cluster.this[0].id, null)
+  description = "The ID of the created ECS cluster."
+  value       = aws_ecs_cluster.cluster.id
 }
 
 output "cluster_name" {
-  description = "Name that identifies the cluster"
-  value       = try(aws_ecs_cluster.this[0].name, null)
+  description = "The name of the created ECS cluster."
+  value       = aws_ecs_cluster.cluster.name
+}
+
+output "cluster_arn" {
+  description = "The ARN of the created ECS cluster."
+  value       = aws_ecs_cluster.cluster.arn
 }
