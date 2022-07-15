@@ -4,3 +4,10 @@ module "ecs"{
     tags = merge(var.tags, map("Name", var.name))
 
 }
+
+module "ecs-task-def" {
+    source = "../ecs-task-def"
+    name = join("-", [var.name, "ecs-task-def"])
+    containerPort = 80
+    hostPort = 80
+}
