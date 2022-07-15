@@ -3,7 +3,7 @@ resource "aws_ecs_task_definition" "this" {
   container_definitions    = <<DEFINITION
   [
     {
-      "name": "${var.service_name}",
+      "name": "${var.name}",
       "image": "944706592399.dkr.ecr.us-west-2.amazonaws.com/my-first-ecr-repo",
       "essential": true,
       "portMappings": [
