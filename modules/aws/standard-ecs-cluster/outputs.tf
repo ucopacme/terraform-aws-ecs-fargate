@@ -12,3 +12,7 @@ output "cluster_arn" {
   description = "The ARN of the created ECS cluster."
   value       = module.ecs.cluster_arn
 }
+output "execution_role" {
+  description = "ARN of IAM role"
+  value       = module.ecs.execution_role.arn
+}
