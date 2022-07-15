@@ -61,7 +61,7 @@ resource "aws_iam_role_policy" "task_role" {
 }
 
 resource "aws_ecs_cluster" "this" {
-  name = "${var.service_name}_cluster"
+  name = "${var.name}_cluster"
 }
 
 # resource "aws_security_group" "ecs" {
