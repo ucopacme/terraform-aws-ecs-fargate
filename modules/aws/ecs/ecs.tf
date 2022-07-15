@@ -41,7 +41,7 @@ data "aws_iam_policy_document" "task_role" {
 }
 
 resource "aws_iam_role" "execution_role" {
-  name               = "${var.service_name}_ecsTaskExecutionRole"
+  name               = "${var.name}_ecsTaskExecutionRole"
   assume_role_policy = "${data.aws_iam_policy_document.assume_by_ecs.json}"
 }
 
@@ -51,7 +51,7 @@ resource "aws_iam_role_policy" "execution_role" {
 }
 
 resource "aws_iam_role" "task_role" {
-  name               = "${var.service_name}_ecsTaskRole"
+  name               = "${var.name}_ecsTaskRole"
   assume_role_policy = "${data.aws_iam_policy_document.assume_by_ecs.json}"
 }
 
@@ -65,7 +65,7 @@ resource "aws_ecs_cluster" "this" {
 }
 
 # resource "aws_security_group" "ecs" {
-#   name   = "${var.service_name}-allow-ecs"
+#   name   = "${var.name}-allow-ecs"
 #   vpc_id = "vpc-06a0bfef01b9d0e7b"
 
 #   ingress {
