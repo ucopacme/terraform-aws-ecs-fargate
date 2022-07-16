@@ -3,7 +3,7 @@ resource "aws_ecs_task_definition" "this" {
   container_definitions    = <<DEFINITION
   [
     {
-      "name": "var.name
+      "name": var.name
       "image": var.image
       "essential": true,
       "portMappings": [
