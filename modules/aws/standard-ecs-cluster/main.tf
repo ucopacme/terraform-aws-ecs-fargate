@@ -4,7 +4,7 @@ module "ecs"{
     tags = merge(var.tags, map("Name", var.name))
 }
 
-    module "ecs-task-def" {
+module "ecs-task-def" {
     source = "../ecs-task-def"
     containerport = 80
     hostport = 80
