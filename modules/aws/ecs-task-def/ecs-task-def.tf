@@ -1,15 +1,15 @@
 resource "aws_ecs_task_definition" "this" {
-  family                   = "my-first-task" # Naming our first task
+  family                   = "my-first-task-demo" # Naming our first task
   container_definitions    = <<DEFINITION
   [
     {
-      "name": var.name,
-      "image": var.image,
+      "name": "${var.service_name}",
+      "image": "944706592399.dkr.ecr.us-west-2.amazonaws.com/iam-idp-ecr-repo",
       "essential": true,
       "portMappings": [
         {
-          "containerPort": var.containerport,
-          "hostPort": var.hostport
+          "containerPort": 443,
+          "hostPort": 443
         }
       ],
       "memory": 512,
@@ -21,5 +21,6 @@ resource "aws_ecs_task_definition" "this" {
   network_mode             = "awsvpc"    # Using awsvpc as our network mode as this is required for Fargate
   memory                   = 512         # Specifying the memory our container requires
   cpu                      = 256         # Specifying the CPU our container requires
+  execution_role_arn                   = 256         # Specifying the CPU our container requires
   execution_role_arn       = var.execution_role_arn
 }
