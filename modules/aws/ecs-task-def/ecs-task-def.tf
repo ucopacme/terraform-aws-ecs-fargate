@@ -1,10 +1,10 @@
 resource "aws_ecs_task_definition" "this" {
-  family                   = "my-first-task-demo" # Naming our first task
+  family                   = "test-kk-task" # Naming our first task
   container_definitions    = <<DEFINITION
   [
     {
       "name": "${var.name}",
-      "image": "944706592399.dkr.ecr.us-west-2.amazonaws.com/iam-idp-ecr-repo",
+      "image": "${var.image}",
       "essential": true,
       "portMappings": [
         {
