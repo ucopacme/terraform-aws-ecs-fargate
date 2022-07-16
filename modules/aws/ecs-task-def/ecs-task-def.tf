@@ -21,5 +21,5 @@ resource "aws_ecs_task_definition" "this" {
   network_mode             = "awsvpc"    # Using awsvpc as our network mode as this is required for Fargate
   memory                   = 512         # Specifying the memory our container requires
   cpu                      = 256         # Specifying the CPU our container requires
-  execution_role_arn       = var.execution_role_arn
+  execution_role_arn       = module.ecs.execution_role_arn
 }
