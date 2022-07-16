@@ -3,12 +3,12 @@ resource "aws_ecs_task_definition" "this" {
   container_definitions    = <<DEFINITION
   [
     {
-      "name": var.name
-      "image": var.image
+      "name": var.name,
+      "image": var.image,
       "essential": true,
       "portMappings": [
         {
-          "containerPort": var.containerport
+          "containerPort": var.containerport,
           "hostPort": var.hostport
         }
       ],
