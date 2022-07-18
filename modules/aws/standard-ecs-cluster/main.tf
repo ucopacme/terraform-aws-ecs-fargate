@@ -23,7 +23,7 @@ module "alb" {
 #   load_balancer_type = "application"
    vpc_id             = var.vpc_id
    subnets            = var.subnets
-   security_groups    = [var.security_groups]
+   security_groups    = var.security_groups
 
 #   target_groups = [
     
