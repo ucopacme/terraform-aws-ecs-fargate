@@ -24,8 +24,7 @@ module "alb" {
    vpc_id             = var.vpc_id
    subnets            = var.subnets
    security_groups    = var.security_groups
-
-  target_groups = [
+     target_groups = [
     
     {
       backend_protocol = "HTTP"
@@ -70,34 +69,6 @@ module "alb" {
     },
   ]
 
-#   https_listener_rules = [
-
-#       {
-#       https_listener_index = 0
-#       priority             = 5009
-
-#       actions = [{
-#         type        = "forward"
-#         target_group_index = 1
-      
-#       }]
-
-#       conditions = [{
-#         host_headers = ["dev.evaluators.transcriptevaluationservice.com"]
-#       }]
-#     },
-     
-
-#     ]
-
-
-  ])
-  tags = {
-    "ucop:application" = local.application
-    "ucop:createdBy"   = local.createdBy
-    "ucop:environment" = local.environment
-    "ucop:group"       = local.group
-    "ucop:source"      = local.source
-  }
+ 
 }
   
