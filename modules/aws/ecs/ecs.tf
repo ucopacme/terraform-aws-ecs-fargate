@@ -46,7 +46,7 @@ resource "aws_iam_role" "execution_role" {
 }
 
 resource "aws_iam_role_policy" "execution_role" {
-  role   = aws_iam_role.execution_role.name
+  role   = "${aws_iam_role.execution_role.name}"
   policy = data.aws_iam_policy_document.execution_role.json
 }
 
