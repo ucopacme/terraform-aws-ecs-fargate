@@ -19,5 +19,5 @@ variable "execution_role_arn" {
 }
 
 variable "name" {
-  default = "demo-ecs"
+  type       = string
 }
