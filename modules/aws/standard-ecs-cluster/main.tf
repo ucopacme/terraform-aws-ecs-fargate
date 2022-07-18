@@ -90,7 +90,7 @@ module "alb" {
 
 #     ]
 
-  name = join("-", [local.application, local.environment
+
   ])
   tags = {
     "ucop:application" = local.application
