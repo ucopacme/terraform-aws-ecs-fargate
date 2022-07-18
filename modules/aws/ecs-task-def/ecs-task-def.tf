@@ -8,8 +8,8 @@ resource "aws_ecs_task_definition" "this" {
       "essential": true,
       "portMappings": [
         {
-          "containerPort": "${var.containerport}",
-          "hostPort": "${var.hostport}"
+          "containerPort": ${var.containerport},
+          "hostPort": ${var.hostport}
         }
       ],
       "memory": 512,
