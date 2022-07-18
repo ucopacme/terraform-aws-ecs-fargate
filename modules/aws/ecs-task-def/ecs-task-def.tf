@@ -9,7 +9,7 @@ resource "aws_ecs_task_definition" "this" {
       "portMappings": [
         {
           "containerPort": "${var.containerport}",
-          "hostPort": "${var.hostport}
+          "hostPort": "${var.hostport}"
         }
       ],
       "memory": 512,
