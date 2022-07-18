@@ -57,7 +57,7 @@ resource "aws_iam_role" "task_role" {
 
 resource "aws_iam_role_policy" "task_role" {
   role   = "${aws_iam_role.task_role.arn}"
-  policy = data.aws_iam_policy_document.task_role.json
+  policy = "${data.aws_iam_policy_document.task_role.json}"
 }
 
 resource "aws_ecs_cluster" "this" {
