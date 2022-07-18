@@ -17,7 +17,7 @@ module "ecs-task-def" {
 }
 
 module "alb" {
-  source = "git::https://git@github.com/ucopacme/terraform-aws-alb-nlb//?ref=v0.0.5",
+  source = "git::https://git@github.com/ucopacme/terraform-aws-alb-nlb//?ref=v0.0.5"
   name   = join("-", [local.application, local.environment])
 #   enabled            = "true"
 #   load_balancer_type = "application"
