@@ -1,5 +1,5 @@
 resource "aws_ecs_task_definition" "this" {
-  family                   = "test-kk-task" # Naming our first task
+  family                   = join("-", [var.name, "task"]) # Naming our first task
   container_definitions    = <<DEFINITION
   [
     {
@@ -8,8 +8,8 @@ resource "aws_ecs_task_definition" "this" {
       "essential": true,
       "portMappings": [
         {
-          "containerPort": 443,
-          "hostPort": 443
+          "containerPort": "${var.contianerport}",
+          "hostPort": "${var.hostport}
         }
       ],
       "memory": 512,
