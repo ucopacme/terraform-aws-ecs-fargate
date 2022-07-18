@@ -32,7 +32,14 @@ variable "hostport" {
   description = "Prefix (eg. abc) of the instance profile (abcProfile) and role (abcRole) names"
   type        = string
 }
-
+variable "memory" {
+  description = "task df memory"
+  type        = string
+}
+variable "cpu" {
+  description = "task df cpu"
+  type        = string
+}
 provider "aws" {
   access_key = ""
   secret_key = ""
