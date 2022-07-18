@@ -13,7 +13,7 @@ resource "aws_ecs_task_definition" "this" {
         }
       ],
       "memory": ${var.memory},
-      "cpu": ${var.cpy}
+      "cpu": ${var.cpu}
     }
   ]
   DEFINITION
