@@ -21,9 +21,9 @@ module "alb" {
   name   = var.name
 #   enabled            = "true"
 #   load_balancer_type = "application"
-    vpc_id             = var.vpc_id
-    subnets            = var.subnets
-   security_groups    = [var.securiy_group]
+   vpc_id             = var.vpc_id
+   subnets            = var.subnets
+   security_groups    = [var.securiy_groups]
 
 #   target_groups = [
     
