@@ -1,23 +1,31 @@
 variable "image" {
-  description = "Prefix (eg. abc) of the instance profile (abcProfile) and role (abcRole) names"
+  description = "Task def image name"
   type        = string
 }
 
 variable "containerport" {
-  description = "Prefix (eg. abc) of the instance profile (abcProfile) and role (abcRole) names"
+  description = "Container port number"
   type        = string
 }
 
 variable "hostport" {
-  description = "Prefix (eg. abc) of the instance profile (abcProfile) and role (abcRole) names"
+  description = "Host port number"
   type        = string
 }
 
 variable "execution_role_arn" {
-  description = "Prefix (eg. abc) of the instance profile (abcProfile) and role (abcRole) names"
+  description = "ECS execution role arn"
   type        = string
 }
 
 variable "name" {
   type       = string
+}
+variable "memory" {
+  description = "task df memory"
+  type        = string
+}
+variable "cpu" {
+  description = "task df cpu"
+  type        = string
 }
