@@ -6,8 +6,11 @@ module "ecs"{
 
 module "ecs-task-def" {
     source = "../ecs-task-def"
-    containerport = 80
-    hostport = 80
+    containerport = ${var.containerport}
+    hostport = ${var.hostport}
+    name     =join("-", [var.name,"task-def"])
+    memory  = ${var.memory}
+    cpu     =${var.cpu}
     image = var.image
     #execution_role_arn = module.ecs.execution_role_arn
     execution_role_arn = module.ecs.execution_role_arn
