@@ -154,11 +154,7 @@ variable "load_balancer_delete_timeout" {
   default     = "10m"
 }
 
-variable "name" {
-  description = "The resource name and Name tag of the load balancer."
-  type        = string
-  default     = null
-}
+
 
 variable "name_prefix" {
   description = "The resource name prefix and Name tag of the load balancer. Cannot be longer than 6 characters"
@@ -196,11 +192,6 @@ variable "subnet_mapping" {
   default     = []
 }
 
-variable "tags" {
-  description = "A map of tags to add to all resources"
-  type        = map(string)
-  default     = {}
-}
 
 variable "lb_tags" {
   description = "A map of tags to add to load balancer"
