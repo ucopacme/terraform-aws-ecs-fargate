@@ -1,7 +1,8 @@
 #example : fill your information
 variable "name" {
-  description = "name, to be used as prefix for all resource names"
+  description = "The resource name."
   type        = string
+  default     = null
 }
 variable "tags" {
   default     = {}
