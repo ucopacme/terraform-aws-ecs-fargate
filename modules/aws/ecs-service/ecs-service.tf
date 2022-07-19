@@ -1,13 +1,12 @@
 data "aws_ecs_task_definition" "this" {
-  task_definition = module.ecs_task_def.family
-  depends_on      = [module.ecs_task_def]
+  task_definition = aws_ecs_task_definition.this.family
+  depends_on      = [aws_ecs_task_definition.this]
 }
 resource "aws_ecs_service" "this" {
-  name            = "${var.name}"
+  name = var.service_name
   # task_definition = "${aws_ecs_task_definition.this.id}"
-  #task_definition = module.ecs-task-def.family:max(module.ecs-task-def.revision, module.ecs-task-def.revision)}
   task_definition = "${aws_ecs_task_definition.this.family}:${max("${aws_ecs_task_definition.this.revision}", "${data.aws_ecs_task_definition.this.revision}")}"
-  cluster         = "${module.ecs.cluster_arn}"
+  cluster         = aws_ecs_cluster.this.arn
 
   load_balancer {
     target_group_arn = module.alb.target_group_arns[0]
