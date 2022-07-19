@@ -40,10 +40,10 @@ variable "vpc_id" {
   type        = string
   default     = null
 }
-#variable "target_group_arn" {
- # description = "task df cpu"
-  #type        = string
-#}
+variable "target_group_arn" {
+  description = "task df cpu"
+  type        = string
+}
 
 #variable "http_tcp_listener_arns" {
  # description = ""
