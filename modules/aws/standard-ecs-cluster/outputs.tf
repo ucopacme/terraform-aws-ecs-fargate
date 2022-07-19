@@ -20,10 +20,10 @@ output "execution_role_arn" {
 
 output "family" {
   description = "The family of your task definition, used as the definition name"
-  value       = module.ecs-task-def.family
+  value       = module.ecs_task_def.family
 }
     
     output "revision" {
   description = "The revision of the task in a particular family"
-  value       = module.ecs-task-def.revision
+  value       = module.ecs_task_def.revision
 }
