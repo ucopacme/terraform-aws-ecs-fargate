@@ -44,16 +44,7 @@ module "alb" {
     #   # Add instances to target groups
     },
   ]
-    # Create HTTPs listners
-    https_listeners = [
-      {
-        port               = 80
-        protocol           = "HTTP"
-        # certificate_arn    = "arn:aws:acm:us-west-2:897194160541:certificate/87a248af-588b-4aa4-8463-820febd286b4"
-        target_group_index = 0
-        # ssl_policy         = "ELBSecurityPolicy-TLS-1-2-Ext-2018-06"
-      }
-    ]
+   
   
   http_tcp_listeners = [
     {
