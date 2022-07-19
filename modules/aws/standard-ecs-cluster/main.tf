@@ -14,6 +14,7 @@ module "ecs_task_def" {
     image = var.image
     #execution_role_arn = module.ecs.execution_role_arn
     execution_role_arn = module.ecs.execution_role_arn
+    cluster = module.ecs.cluster_arn
 }
 
 # module "ecs-service" {
