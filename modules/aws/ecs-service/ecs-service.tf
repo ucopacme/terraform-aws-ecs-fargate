@@ -1,5 +1,5 @@
 data "aws_ecs_task_definition" "this" {
-  task_definition = aws_ecs_task_definition.this.family
+  task_definition = module.ecs_task_def.family
   depends_on      = [module.ecs_task_def]
 }
 resource "aws_ecs_service" "this" {
