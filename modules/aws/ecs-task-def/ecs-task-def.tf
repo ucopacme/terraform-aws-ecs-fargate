@@ -35,7 +35,7 @@ resource "aws_ecs_service" "this" {
   name = var.service_name
   # task_definition = "${aws_ecs_task_definition.this.id}"
   task_definition = "${aws_ecs_task_definition.this.family}:${max("${aws_ecs_task_definition.this.revision}", "${data.aws_ecs_task_definition.this.revision}")}"
-  cluster         = aws_ecs_cluster.this.arn
+  cluster         = var.cluster
 
   load_balancer {
     target_group_arn = module.alb.target_group_arns[0]
