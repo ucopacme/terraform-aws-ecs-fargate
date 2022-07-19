@@ -28,10 +28,10 @@ output "revision" {
   value       = module.ecs_task_def.revision
 }
 
-#output "target_group_arns" {
- # description = "ARNs of the target groups. Useful for passing to your Auto Scaling group."
-  #value       = module.alb.target_group_arns
-#}
+output "target_group_arns" {
+  description = "ARNs of the target groups. Useful for passing to your Auto Scaling group."
+  value       = module.alb.target_group_arns
+}
 #output "https_listener_arns" {
 #  description = "The ARNs of the HTTPS load balancer listeners created."
  # value       = module.alb.https_listener_arns
