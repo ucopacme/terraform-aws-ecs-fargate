@@ -39,7 +39,7 @@ variable "target_group_arn" {
   type        = string
 }
 
-variable "http_tcp_listener_arns" {
-  description = ""
-  type        = string
-}
+#variable "http_tcp_listener_arns" {
+ # description = ""
+  #type        = string
+#}
