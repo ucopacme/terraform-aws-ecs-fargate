@@ -2,7 +2,7 @@ data "aws_ecs_task_definition" "this" {
   task_definition = "${aws_ecs_task_definition.this.family}"
 }
 resource "aws_ecs_service" "this" {
-  name            = "${var.service_name}"
+  name            = "${var.name}"
   # task_definition = "${aws_ecs_task_definition.this.id}"
   task_definition = "${aws_ecs_task_definition.this.family}:${max("${aws_ecs_task_definition.this.revision}", "${data.aws_ecs_task_definition.this.revision}")}"
   cluster         = "${module.ecs.cluster_arn}"
@@ -12,7 +12,7 @@ resource "aws_ecs_service" "this" {
     # target_group_arn = "${aws_lb_target_group.this[0].arn}"
     # target_group_arn = "${aws_lb_target_group.blue.arn}"
     container_name   = "${var.name}"
-    container_port   = "${var.container_port}"
+    container_port   = "${var.containerport}"
   }
 
   launch_type                        = "FARGATE"
