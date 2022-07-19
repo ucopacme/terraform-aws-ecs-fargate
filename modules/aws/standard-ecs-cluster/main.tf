@@ -18,7 +18,7 @@ module "ecs-task-def" {
 
  module "ecs-service" {
     source = "../ecs-service"
-    container_port = var.containerport
+    containerport = var.containerport
     name     =join("-", [var.name,"ecs-service"])
 }
 
