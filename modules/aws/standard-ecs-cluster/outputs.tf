@@ -23,7 +23,12 @@ output "family" {
   value       = module.ecs_task_def.family
 }
     
-    output "revision" {
+output "revision" {
   description = "The revision of the task in a particular family"
   value       = module.ecs_task_def.revision
+}
+
+output "target_group_arns" {
+  description = "ARNs of the target groups. Useful for passing to your Auto Scaling group."
+  value       = module.alb.target_group_arns
 }
