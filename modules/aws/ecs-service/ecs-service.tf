@@ -1,6 +1,6 @@
 data "aws_ecs_task_definition" "this" {
   task_definition = aws_ecs_task_definition.this.family
-  depends_on      = [aws_ecs_task_definition.this]
+  depends_on      = [module.ecs_task_def]
 }
 resource "aws_ecs_service" "this" {
   name            = "${var.name}"
