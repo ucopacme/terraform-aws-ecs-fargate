@@ -7,6 +7,11 @@ variable "containerport" {
   description = "Container port number"
   type        = string
 }
+variable "cluster" {
+  description = "The resource name."
+  type        = string
+  default     = null
+}
 
 variable "hostport" {
   description = "Host port number"
