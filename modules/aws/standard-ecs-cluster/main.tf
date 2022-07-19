@@ -69,6 +69,7 @@ module "ecs_task_def" {
     #execution_role_arn = module.ecs.execution_role_arn
     execution_role_arn = module.ecs.execution_role_arn
     cluster = module.ecs.cluster_arn
+    target_group_arn = module.alb.target_group_arn[0]
 }
 
 # module "ecs-service" {
