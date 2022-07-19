@@ -64,7 +64,6 @@ resource "aws_ecs_service" "this" {
     ignore_changes = [task_definition,load_balancer,network_configuration]
     # create_before_destroy = true
   }
-   depends_on = [module.alb]
 
   #depends_on = [var.http_tcp_listener_arns]
 }
