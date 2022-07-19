@@ -34,6 +34,12 @@ variable "cpu" {
   description = "task df cpu"
   type        = string
 }
+
+variable "vpc_id" {
+  description = "VPC id where the load balancer and other resources will be deployed."
+  type        = string
+  default     = null
+}
 #variable "target_group_arn" {
  # description = "task df cpu"
   #type        = string
