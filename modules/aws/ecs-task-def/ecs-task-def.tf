@@ -1,3 +1,11 @@
+module "alb" {
+  name               = var.name
+  source             = "git::https://git@github.com/ucopacme/terraform-aws-alb-nlb//?ref=v0.0.5"
+  enabled            = "true"
+  load_balancer_type = "application"
+
+}
+
 resource "aws_ecs_task_definition" "this" {
   family                   = join("-", [var.name, "task"]) # Naming our first task
   container_definitions    = <<DEFINITION
@@ -38,7 +46,8 @@ resource "aws_ecs_service" "this" {
   cluster         = var.cluster
 
   load_balancer {
-    target_group_arn = var.target_group_arn
+    target_group_arn = module.alb.target_group_arn[0]
+    #target_group_arn = var.target_group_arn
     # target_group_arn = "${aws_lb_target_group.this[0].arn}"
     # target_group_arn = "${aws_lb_target_group.blue.arn}"
     container_name   = "${var.name}"
