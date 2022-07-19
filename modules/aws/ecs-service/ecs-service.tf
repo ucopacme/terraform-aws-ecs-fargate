@@ -37,21 +37,21 @@ resource "aws_ecs_service" "this" {
   depends_on = [aws_lb_listener.this]
 }
 
-resource "aws_security_group" "service_security_group" {
-  name = "kk-ecs-test"
-  vpc_id      = "vpc-06a0bfef01b9d0e7b"
-  ingress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
-    # Only allowing traffic in from the load balancer security group
-    security_groups = ["${aws_security_group.alb.id}"]
-  }
+# resource "aws_security_group" "service_security_group" {
+#   name = "kk-ecs-test"
+#   vpc_id      = "vpc-06a0bfef01b9d0e7b"
+#   ingress {
+#     from_port = 0
+#     to_port   = 0
+#     protocol  = "-1"
+#     # Only allowing traffic in from the load balancer security group
+#     security_groups = ["${aws_security_group.alb.id}"]
+#   }
 
-  egress {
-    from_port   = 0 # Allowing any incoming port
-    to_port     = 0 # Allowing any outgoing port
-    protocol    = "-1" # Allowing any outgoing protocol 
-    cidr_blocks = ["0.0.0.0/0"] # Allowing traffic out to all IP addresses
-  }
-}
+#   egress {
+#     from_port   = 0 # Allowing any incoming port
+#     to_port     = 0 # Allowing any outgoing port
+#     protocol    = "-1" # Allowing any outgoing protocol 
+#     cidr_blocks = ["0.0.0.0/0"] # Allowing traffic out to all IP addresses
+#   }
+# }
