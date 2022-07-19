@@ -16,5 +16,11 @@ module "ecs-task-def" {
     execution_role_arn = module.ecs.execution_role_arn
 }
 
+ module "ecs-service" {
+    source = "../ecs-service"
+    containerport = var.containerport
+    name     =join("-", [var.name,"ecs-service"])
+}
+
 
   

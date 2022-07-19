@@ -9,3 +9,7 @@ variable "cluster" {
   type        = string
   default     = null
 }
+
+variable "containerport" {
+  default = "443"
+}
