@@ -55,9 +55,9 @@ resource "aws_ecs_service" "this" {
   }
   
   network_configuration {
-    subnets          = ["subnet-0c0dbee3b7b03e4e2", "subnet-0fd7ec9b1f3cdd68d"]
+    subnets          = ["subnet-08fa3f4ead345e4e9", "subnet-0cbc9a1bd58738d55"]
     assign_public_ip = true # Providing our containers with public IPs
-    security_groups   = [aws_security_group.service_security_group.id]
+    security_groups   = ["sg-032b4eb81e054cc1f"]
   }
   lifecycle {
     ignore_changes = [task_definition,load_balancer,network_configuration]
@@ -75,7 +75,7 @@ resource "aws_ecs_service" "this" {
 #     to_port   = 0
 #     protocol  = "-1"
 #     # Only allowing traffic in from the load balancer security group
-#     security_groups = ["${aws_security_group.alb.id}"]
+#     security_groups = [""]
 #   }
 
 #   egress {
