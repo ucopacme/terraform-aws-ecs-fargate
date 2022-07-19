@@ -249,11 +249,6 @@ variable "vpc_id" {
   default     = null
 }
 
-variable "subnets" {
-  description = "The security groups to attach to the load balancer. e.g. [\"sg-edcd9784\",\"sg-edcd9785\"]"
-  type        = list(string)
-  default     = []
-}
 
 variable "backend_protocol" {
   description = "VPC id where the load balancer and other resources will be deployed."
