@@ -1,5 +1,5 @@
 data "aws_ecs_task_definition" "this" {
-  task_definition = "${aws_ecs_task_definition.this.family}"
+  task_definition = module.ecs-task-def.family
 }
 resource "aws_ecs_service" "this" {
   name            = "${var.name}"
