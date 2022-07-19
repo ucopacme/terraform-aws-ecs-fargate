@@ -64,7 +64,7 @@ resource "aws_ecs_service" "this" {
     # create_before_destroy = true
   }
 
-  depends_on = [module.alb.target_group_arns]
+  depends_on = [var.http_tcp_listener_arns]
 }
 
 # resource "aws_security_group" "service_security_group" {
