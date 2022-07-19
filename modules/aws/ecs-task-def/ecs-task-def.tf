@@ -43,7 +43,7 @@ resource "aws_ecs_service" "this" {
     # target_group_arn = "${aws_lb_target_group.blue.arn}"
     container_name   = "${var.name}"
     container_port   = "${var.containerport}"
-    depends_on = [module.alb]
+   
   }
 
   launch_type                        = "FARGATE"
@@ -64,6 +64,7 @@ resource "aws_ecs_service" "this" {
     ignore_changes = [task_definition,load_balancer,network_configuration]
     # create_before_destroy = true
   }
+   depends_on = [module.alb]
 
   #depends_on = [var.http_tcp_listener_arns]
 }
