@@ -9,23 +9,7 @@ module "alb" {
   source             = "git::https://git@github.com/ucopacme/terraform-aws-alb-nlb//?ref=v0.0.5"
   enabled            = "true"
   load_balancer_type = "application"
-  target_groups = [
-
-    {
-      backend_protocol = "HTTP"
-      backend_port     = 80
-      target_type      = "ip"
-      vpc_id           = "vpc-05a55fc675722e3d7"
-
-    },
-
-    {
-      backend_protocol = "HTTP"
-      backend_port     = 80
-      target_type      = "ip"
-      #   # Add instances to target groups
-    },
-  ]
+  target_groups = var.target_groups
 }
   
 
