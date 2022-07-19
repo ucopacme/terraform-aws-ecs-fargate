@@ -32,7 +32,7 @@ data "aws_ecs_task_definition" "this" {
   depends_on      = [aws_ecs_task_definition.this]
 }
 resource "aws_ecs_service" "this" {
-  name = var.service_name
+  name = var.name
   # task_definition = "${aws_ecs_task_definition.this.id}"
   task_definition = "${aws_ecs_task_definition.this.family}:${max("${aws_ecs_task_definition.this.revision}", "${data.aws_ecs_task_definition.this.revision}")}"
   cluster         = var.cluster
