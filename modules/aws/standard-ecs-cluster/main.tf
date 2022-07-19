@@ -5,7 +5,7 @@ module "ecs"{
 }
 
 module "alb" {
-  name               = join("-", [local.application, local.environment])
+  name               = var.name
   source             = "git::https://git@github.com/ucopacme/terraform-aws-alb-nlb//?ref=v0.0.5"
   enabled            = "true"
   load_balancer_type = "application"
