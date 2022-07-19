@@ -25,5 +25,5 @@ output "family" {
     
     output "revision" {
   description = "The revision of the task in a particular family"
-  value       = module.ecs-task-def.this.*.revision
+  value       = module.ecs-task-def.revision
 }
