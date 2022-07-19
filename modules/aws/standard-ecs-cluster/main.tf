@@ -9,53 +9,7 @@ module "alb" {
   source             = "git::https://git@github.com/ucopacme/terraform-aws-alb-nlb//?ref=v0.0.5"
   enabled            = "true"
   load_balancer_type = "application"
-  vpc_id             = var.vpc_id
-  subnets            = var.subnets
-  security_groups    = var.security_groups
-
-  target_groups = [
-
-    {
-      backend_protocol = var.backend_protocol
-      backend_port     = 80
-      target_type      = "ip"
-
-    },
-
-    {
-      backend_protocol = "HTTP"
-      backend_port     = 80
-      target_type      = "ip"
-      #   # Add instances to target groups
-    },
-  ]
-  # Create HTTPs listners
-  # https_listeners = [
-  #   {
-  #     port     = 80
-  #     protocol = "HTTP"
-  #     # certificate_arn    = "arn:aws:acm:us-west-2:897194160541:certificate/87a248af-588b-4aa4-8463-820febd286b4"
-  #     target_group_index = 0
-  #     # ssl_policy         = "ELBSecurityPolicy-TLS-1-2-Ext-2018-06"
-  #   }
-  # ]
-
-  http_tcp_listeners = [
-    {
-      port               = 80
-      protocol           = "HTTP"
-      target_group_index = 0
-      # action_type        = "redirect"
-      # redirect = {
-      #   port        = "443"
-      #   protocol    = "HTTPS"
-      #   status_code = "HTTP_301"
-      # }
-    },
-  ]
-
-  tags = var.tags
-}
+  
 
 
 module "ecs_task_def" {
