@@ -38,7 +38,7 @@ resource "aws_ecs_service" "this" {
   cluster         = var.cluster
 
   load_balancer {
-    target_group_arn = module.alb.target_group_arns[0]
+    target_group_arn = var.target_group_arn
     # target_group_arn = "${aws_lb_target_group.this[0].arn}"
     # target_group_arn = "${aws_lb_target_group.blue.arn}"
     container_name   = "${var.name}"
