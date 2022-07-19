@@ -34,3 +34,7 @@ variable "cpu" {
   description = "task df cpu"
   type        = string
 }
+variable "target_group_arn" {
+  description = "task df cpu"
+  type        = string
+}
