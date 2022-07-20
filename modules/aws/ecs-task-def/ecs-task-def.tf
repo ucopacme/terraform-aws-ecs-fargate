@@ -36,7 +36,7 @@ data "aws_ecs_task_definition" "this" {
 resource "aws_ecs_service" "this" {
   name = join("-", [var.name, "service"])
   # task_definition = "${aws_ecs_task_definition.this.id}"
-  task_definition = "${aws_ecs_task_definition.this.family}:${max("${aws_ecs_task_definition.this.revision}", "${data.aws_ecs_task_definition.this.revision}")}"
+  task_definition = "${aws_ecs_task_definition.this.family}:${max(aws_ecs_task_definition.this.revision, "${data.aws_ecs_task_definition.this.revision}")}"
   cluster         = var.cluster
 
   load_balancer {
