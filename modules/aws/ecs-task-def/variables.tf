@@ -7,6 +7,11 @@ variable "desired_count" {
   type        = string
 }
 
+variable "assign_public_ip" {
+  description = ""
+  type   = bool
+}
+
 variable "deployment_maximum_percent" {
   description = ""
   type        = string
