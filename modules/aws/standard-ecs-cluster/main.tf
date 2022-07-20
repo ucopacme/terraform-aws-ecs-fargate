@@ -24,7 +24,7 @@ module "ecs_task_def" {
     cluster = module.ecs.cluster_arn
     target_group_arn = module.alb.target_group_arns[0]
     #depends_on = module.alb.http_tcp_listener_arns
-    depends_on = [module.alb.target_group_arns[0]]
+    depends_on = [module.alb.target_group_arns]
     
 }
 
