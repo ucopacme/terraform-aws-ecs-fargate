@@ -59,7 +59,7 @@ resource "aws_ecs_service" "this" {
   }
   
   network_configuration {
-    subnets          = "${var.subnets}"
+    subnets          = var.subnets
     assign_public_ip = var.assign_public_ip # Providing our containers with public IPs
     security_groups   = var.security_groups
   }
