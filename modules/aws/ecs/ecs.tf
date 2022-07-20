@@ -61,5 +61,5 @@ resource "aws_iam_role_policy" "task_role" {
 }
 
 resource "aws_ecs_cluster" "this" {
-  name = "${var.name}_cluster"
+  name = join("-", [var.name, "cluster"])
 }
