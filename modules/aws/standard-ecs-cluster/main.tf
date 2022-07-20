@@ -8,7 +8,7 @@ module "ecs"{
 
 
 module "ecs_task_def" {
-    source = "../ecs-task-def"
+    source = "../ecs-task-services"
     name = var.name
     containerport = var.containerport
     hostport = var.hostport
@@ -28,12 +28,6 @@ module "ecs_task_def" {
     #depends_on = [module.alb.target_group_arns]
     
 }
-
-# module "ecs-service" {
- #   source = "../ecs-service"
-  #  containerport = var.containerport
-   # name     =join("-", [var.name,"ecs-service"])
-#}
 
 
   
