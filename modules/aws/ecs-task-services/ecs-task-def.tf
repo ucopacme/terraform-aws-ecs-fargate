@@ -76,7 +76,7 @@ resource "aws_ecs_service" "this" {
 
 
 resource "aws_appautoscaling_target" "target" {
-  service_namespace  = join("-", [var.name, "autoscale"])
+  service_namespace  = "ecs"
   resource_id        = "service/var.cluster/${aws_ecs_service.this.name}"
   scalable_dimension = "ecs:service:DesiredCount"
   role_arn           = "arn:aws:iam::944706592399:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling_kk-test"
