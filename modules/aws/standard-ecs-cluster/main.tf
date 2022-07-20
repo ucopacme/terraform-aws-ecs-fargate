@@ -49,7 +49,7 @@ module "alb" {
       # }
     },
   ]
-  var.tags
+ tags = var.tags
 
 }
   
