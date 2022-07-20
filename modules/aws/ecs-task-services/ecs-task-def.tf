@@ -92,7 +92,8 @@ resource "aws_cloudwatch_log_stream" "cb_log_stream" {
 
 resource "aws_appautoscaling_target" "target" {
   service_namespace  = "ecs"
-  resource_id        = "service/${var.cluster}/${aws_ecs_service.this.name}"
+  resource_id = "service/${var.cluster}/${aws_ecs_service.this.name}"
+  #resource_id        = "service/${chs-dev-ecs-cluster}/${chs-dev-service}"
   scalable_dimension = "ecs:service:DesiredCount"
   role_arn           = "arn:aws:iam::944706592399:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling_kk-test"
   min_capacity       = 1
@@ -103,7 +104,7 @@ resource "aws_appautoscaling_target" "target" {
 resource "aws_appautoscaling_policy" "up" {
   name               = "cb_scale_up"
   service_namespace  = "ecs"
-  resource_id        = "service/${var.cluster}/${aws_ecs_service.this.name}"
+  resource_id        = "service/${chs-dev-ecs-cluster}/${chs-dev-service}"
   scalable_dimension = "ecs:service:DesiredCount"
 
   step_scaling_policy_configuration {
@@ -124,7 +125,7 @@ resource "aws_appautoscaling_policy" "up" {
 resource "aws_appautoscaling_policy" "down" {
   name               = "cb_scale_down"
   service_namespace  = "ecs"
-  resource_id        = "service/${var.cluster}/${aws_ecs_service.this.name}"
+  resource_id        = "service/${chs-dev-ecs-cluster}/${chs-dev-service}"
   scalable_dimension = "ecs:service:DesiredCount"
 
   step_scaling_policy_configuration {
