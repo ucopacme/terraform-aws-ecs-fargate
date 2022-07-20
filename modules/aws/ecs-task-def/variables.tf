@@ -12,7 +12,11 @@ variable "cluster" {
   type        = string
   default     = null
 }
-
+variable "security_groups" {
+  description = "The security groups to attach to the ecs. e.g. [\"sg-edcd9784\",\"sg-edcd9785\"]"
+  type        = list(string)
+  default     = []
+}
 variable "hostport" {
   description = "Host port number"
   type        = string
