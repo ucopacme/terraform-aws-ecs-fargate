@@ -6,7 +6,8 @@ variable "name" {
 }
 variable "assign_public_ip" {
   description = ""
-  type   = bool
+  type   = string
+  default = "false"
 }
 variable "tags" {
   default     = {}
