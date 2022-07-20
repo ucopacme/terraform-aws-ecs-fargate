@@ -4,6 +4,10 @@ variable "name" {
   type        = string
   default     = null
 }
+variable "assign_public_ip" {
+  description = ""
+  type   = bool
+}
 variable "tags" {
   default     = {}
   description = "A map of tags to add to all resources"
