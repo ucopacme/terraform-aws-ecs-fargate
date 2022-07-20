@@ -1,13 +1,6 @@
 module "alb" {
-  source        = "../ecs"
-  name          = join("-", [local.application, local.environment])
-  tags = {
-    "ucop:application" = local.application
-    "ucop:createdBy"   = local.createdBy
-    "ucop:environment" = local.environment
-    "ucop:group"       = local.group
-    "ucop:source"      = local.source
-  }
+  name               = var.name
+  source             = "../alb"
   enabled            = "true"
   load_balancer_type = "application"
   vpc_id             = var.vpc_id
@@ -56,12 +49,11 @@ module "alb" {
       # }
     },
   ]
-
-
-}
-
+  var.tags
 
 }
+  
+  
 module "ecs"{
     source = "../ecs"
     name = join("-", [var.name, "ecs"])
