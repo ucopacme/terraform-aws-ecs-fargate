@@ -9,7 +9,8 @@ variable "desired_count" {
 
 variable "assign_public_ip" {
   description = ""
-  type   = bool
+  type   = string
+  default = "false"
 }
 
 variable "deployment_maximum_percent" {
