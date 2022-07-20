@@ -18,6 +18,7 @@ module "ecs_task_def" {
     #execution_role_arn = module.ecs.execution_role_arn
     execution_role_arn = module.ecs.execution_role_arn
     cluster = module.ecs.cluster_arn
+    clustername = module.ecs.cluster_name
     target_group_arn = var.target_group_arn
     subnets = var.subnets
     desired_count = var.desired_count
