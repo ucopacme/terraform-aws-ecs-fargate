@@ -181,17 +181,12 @@ variable "access_logs" {
   default     = {}
 }
 
-variable "private_subnets" {
+variable "subnets" {
   description = "A list of subnets to associate with the ecs . e.g. ['subnet-1a2b3c4d','subnet-1a2b3c4e','subnet-1a2b3c4f']"
   type        = list(string)
   default     = null
 }
 
-variable "public_subnets" {
-  description = "A list of subnets to associate with the load balancer. e.g. ['subnet-1a2b3c4d','subnet-1a2b3c4e','subnet-1a2b3c4f']"
-  type        = list(string)
-  default     = null
-}
 
 variable "subnet_mapping" {
   description = "A list of subnet mapping blocks describing subnets to attach to network load balancer"
