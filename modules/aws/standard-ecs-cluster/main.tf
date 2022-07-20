@@ -10,16 +10,16 @@ module "alb" {
   target_groups = [
 
     {
-      backend_protocol = "HTTP"
-      backend_port     = 80
+      backend_protocol = var.backend_protocol
+      backend_port     = var.backend_port
       target_type      = "ip"
       vpc_id           = var.vpc_id
 
     },
 
     {
-      backend_protocol = "HTTP"
-      backend_port     = 80
+      backend_protocol = var.backend_protocol
+      backend_port     = var.backend_protocol
       target_type      = "ip"
       vpc_id           = var.vpc_id
       #   # Add instances to target groups
