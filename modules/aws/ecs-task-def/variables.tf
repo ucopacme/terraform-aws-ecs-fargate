@@ -2,6 +2,20 @@ variable "image" {
   description = "Task def image name"
   type        = string
 }
+variable "desired_count" {
+  description = ""
+  type        = string
+}
+
+variable "deployment_maximum_percent" {
+  description = ""
+  type        = string
+}
+
+variable "deployment_minimum_healthy_percent" {
+  description = ""
+  type        = string
+}
 
 variable "containerport" {
   description = "Container port number"
