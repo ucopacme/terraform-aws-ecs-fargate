@@ -36,7 +36,7 @@ data "aws_iam_policy_document" "task_role" {
 
     actions = ["ecs:DescribeClusters"]
 
-    resources = ["${aws_ecs_cluster.this.arn}"]
+    resources = [aws_ecs_cluster.this.arn]
   }
 }
 
