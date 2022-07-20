@@ -9,7 +9,20 @@ variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
 }
+variable "desired_count" {
+  description = ""
+  type        = string
+}
 
+variable "deployment_maximum_percent" {
+  description = ""
+  type        = string
+}
+
+variable "deployment_minimum_healthy_percent" {
+  description = ""
+  type        = string
+}
 variable "alb_sg" {
   description = "The security groups to attach to the load balancer. e.g. [\"sg-edcd9784\",\"sg-edcd9785\"]"
   type        = list(string)
