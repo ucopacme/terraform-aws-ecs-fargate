@@ -20,6 +20,9 @@ module "ecs_task_def" {
     cluster = module.ecs.cluster_arn
     target_group_arn = var.target_group_arn
     subnets = var.subnets
+    desired_count = var.desired_count
+    deployment_maximum_percent = var.deployment_maximum_percent
+    deployment_minimum_healthy_percent = var.deployment_minimum_healthy_percent
     #depends_on = module.alb.http_tcp_listener_arns
     #depends_on = [module.alb.target_group_arns]
     
