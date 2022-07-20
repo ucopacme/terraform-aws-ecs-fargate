@@ -44,7 +44,7 @@ resource "aws_ecs_service" "this" {
     #target_group_arn = var.target_group_arn
     # target_group_arn = "${aws_lb_target_group.this[0].arn}"
     # target_group_arn = "${aws_lb_target_group.blue.arn}"
-    container_name   = "${var.name}"
+    container_name   = var.name
     container_port   = "${var.containerport}"
    
   }
