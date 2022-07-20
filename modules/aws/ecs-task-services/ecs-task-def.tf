@@ -138,7 +138,7 @@ resource "aws_cloudwatch_metric_alarm" "service_cpu_high" {
   threshold           = "40"
 
   dimensions = {
-    ClusterName = aws_ecs_cluster.this.name
+    ClusterName = var.cluster
     ServiceName = aws_ecs_service.this.name
   }
 
