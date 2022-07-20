@@ -9,6 +9,7 @@ module "ecs"{
 
 module "ecs_task_def" {
     source = "../ecs-task-def"
+    name = var.name
     containerport = var.containerport
     hostport = var.hostport
     memory  = var.memory
