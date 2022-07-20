@@ -61,7 +61,7 @@ resource "aws_ecs_service" "this" {
   network_configuration {
     subnets          = "${var.subnets}"
     assign_public_ip = true # Providing our containers with public IPs
-    security_groups   = [var.security_groups]
+    security_groups   = var.security_groups
   }
   lifecycle {
     ignore_changes = [task_definition,load_balancer,network_configuration]
