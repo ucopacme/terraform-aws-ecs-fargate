@@ -59,7 +59,7 @@ resource "aws_ecs_service" "this" {
   }
   
   network_configuration {
-    subnets          = ["subnet-08fa3f4ead345e4e9", "subnet-0cbc9a1bd58738d55"]
+    subnets          = var.subnets
     assign_public_ip = true # Providing our containers with public IPs
     security_groups   = ["sg-032b4eb81e054cc1f"]
   }
