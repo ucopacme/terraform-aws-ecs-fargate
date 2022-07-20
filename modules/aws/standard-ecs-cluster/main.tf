@@ -11,7 +11,6 @@ module "ecs_task_def" {
     source = "../ecs-task-def"
     containerport = var.containerport
     hostport = var.hostport
-    name     =join("-", [var.name,"task-def"])
     memory  = var.memory
     cpu     =var.cpu
     image = var.image
