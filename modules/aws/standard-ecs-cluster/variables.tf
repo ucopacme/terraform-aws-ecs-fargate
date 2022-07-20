@@ -255,3 +255,9 @@ variable "backend_protocol" {
   type        = string
   default     = null
 }
+
+variable "backend_port" {
+  description = "VPC id where the load balancer and other resources will be deployed."
+  type        = string
+  default     = null
+}
