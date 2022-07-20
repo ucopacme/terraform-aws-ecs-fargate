@@ -86,7 +86,8 @@ resource "aws_cloudwatch_log_stream" "cb_log_stream" {
   log_group_name = aws_cloudwatch_log_group.cb_log_group.name
 }
 
-## Autoscaling
+# auto_scaling
+
 
 
 resource "aws_appautoscaling_target" "target" {
@@ -177,7 +178,6 @@ resource "aws_cloudwatch_metric_alarm" "service_cpu_low" {
 
   alarm_actions = [aws_appautoscaling_policy.down.arn]
 }
-
 # resource "aws_security_group" "service_security_group" {
 #   name = "kk-ecs-test"
 #   vpc_id      = "vpc-06a0bfef01b9d0e7b"
