@@ -261,3 +261,7 @@ variable "backend_port" {
   type        = string
   default     = null
 }
+variable "target_group_arn" {
+  description = ""
+  type        = string
+}
