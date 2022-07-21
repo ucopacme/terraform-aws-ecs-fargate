@@ -9,6 +9,23 @@ variable "assign_public_ip" {
   type   = string
   default = "false"
 }
+variable "min_capacity" {
+  description = ""
+  type        = string
+}
+
+variable "max_capacity" {
+  description = ""
+  type        = string
+}
+variable "threshold_high" {
+  description = ""
+  type        = string
+}
+variable "threshold_low" {
+  description = ""
+  type        = string
+}
 variable "tags" {
   default     = {}
   description = "A map of tags to add to all resources"
