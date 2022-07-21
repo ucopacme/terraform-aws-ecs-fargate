@@ -25,6 +25,7 @@ module "ecs_task_def" {
     deployment_maximum_percent = var.deployment_maximum_percent
     deployment_minimum_healthy_percent = var.deployment_minimum_healthy_percent
     assign_public_ip = var.assign_public_ip
+    security_groups = var.security_groups
     #depends_on = module.alb.http_tcp_listener_arns
     #depends_on = [module.alb.target_group_arns]
     
