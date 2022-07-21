@@ -14,3 +14,11 @@ variable "service_name" {
   type        = string
   default     = null
 }
+
+variable "aws_account_id" {
+  default = ""
+}
+
+variable "region" {
+  default = "us-west-2"
+}
