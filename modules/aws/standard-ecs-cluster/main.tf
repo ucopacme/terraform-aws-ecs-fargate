@@ -28,6 +28,7 @@ module "ecs_task_def" {
     security_groups = var.security_groups
     #depends_on = module.alb.http_tcp_listener_arns
     #depends_on = [module.alb.target_group_arns]
+    tags = var.tags
     
 }
 
