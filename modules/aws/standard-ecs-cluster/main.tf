@@ -26,6 +26,10 @@ module "ecs_task_def" {
     deployment_minimum_healthy_percent = var.deployment_minimum_healthy_percent
     assign_public_ip = var.assign_public_ip
     security_groups = var.security_groups
+    min_capacity = var.min_capacity
+    max_capacity = var.max_capacity
+    threshold  = var.threshold_high
+    threshold   = var.threshold_low
     #depends_on = module.alb.http_tcp_listener_arns
     #depends_on = [module.alb.target_group_arns]
     tags = var.tags
