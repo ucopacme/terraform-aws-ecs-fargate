@@ -96,8 +96,8 @@ resource "aws_appautoscaling_target" "target" {
   resource_id = "service/${var.cluster_name}/${aws_ecs_service.this.name}"
   scalable_dimension = "ecs:service:DesiredCount"
   #role_arn           = aws_iam_role.autoscaling_role.arn
-  min_capacity       = 1
-  max_capacity       = 4
+  min_capacity       = var.min_capacity
+  max_capacity       = var.max_capacity
 }
 
 # Automatically scale capacity up by one
@@ -151,7 +151,7 @@ resource "aws_cloudwatch_metric_alarm" "service_cpu_high" {
   namespace           = "AWS/ECS"
   period              = "60"
   statistic           = "Average"
-  threshold           = "40"
+  threshold           = var.threshold_high
 
   dimensions = {
     ClusterName = var.cluster_name
@@ -170,7 +170,7 @@ resource "aws_cloudwatch_metric_alarm" "service_cpu_low" {
   namespace           = "AWS/ECS"
   period              = "60"
   statistic           = "Average"
-  threshold           = "10"
+  threshold           = var.threshold_low
 
   dimensions = {
     ClusterName = var.cluster_name
