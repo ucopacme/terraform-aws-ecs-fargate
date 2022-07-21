@@ -2,6 +2,7 @@
 
 resource "aws_ecs_task_definition" "this" {
   family                   = join("-", [var.name, "task"]) # Naming our first task
+  tags = var.tags
   container_definitions    = <<DEFINITION
   [
     {
