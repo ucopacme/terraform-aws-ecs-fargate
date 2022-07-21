@@ -6,6 +6,23 @@ variable "desired_count" {
   description = ""
   type        = string
 }
+variable "min_capacity" {
+  description = ""
+  type        = string
+}
+
+variable "max_capacity" {
+  description = ""
+  type        = string
+}
+variable "threshold_high" {
+  description = ""
+  type        = string
+}
+variable "threshold_low" {
+  description = ""
+  type        = string
+}
 
 variable "assign_public_ip" {
   description = ""
