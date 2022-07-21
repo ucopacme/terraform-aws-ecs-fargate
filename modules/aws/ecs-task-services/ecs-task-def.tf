@@ -106,7 +106,7 @@ resource "aws_iam_role" "autoscaling_role" {
 
 resource "aws_iam_role_policy_attachment" "role" {
   role       = aws_iam_role.autoscaling_role.name
-  policy_arn = "arn:aws:iam::aws:policy/aws-service-role/AWSApplicationAutoscalingECSServicePolicy"
+  policy_arn = "arn:aws:iam::aws:policy/aws-service-role/AutoScalingServiceRolePolicy"
 }
 
 resource "aws_appautoscaling_target" "target" {
