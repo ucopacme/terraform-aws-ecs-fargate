@@ -80,7 +80,8 @@ variable "target_group_arn" {
   type        = string
 }
 
-#variable "http_tcp_listener_arns" {
- # description = ""
-  #type        = string
-#}
+variable "tags" {
+  default     = {}
+  description = "A map of tags to add to all resources"
+  type        = map(string)
+}
