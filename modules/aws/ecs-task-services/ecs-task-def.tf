@@ -100,12 +100,12 @@ data "aws_iam_policy_document" "assume_by_ecs" {
   }
 }
 resource "aws_iam_role" "autoscaling_role" {
-  name               = "${var.name}_ecsTaskExecutionRole"
+  name               = "${var.name}_ecsautoscalingRole"
   assume_role_policy = data.aws_iam_policy_document.assume_by_ecs.json
 }
 
 resource "aws_iam_role_policy_attachment" "role" {
-  role       = join("", aws_iam_role.autoscaling_role.name)
+  role       = aws_iam_role.autoscaling_role.name
   policy_arn = "arn:aws:iam::aws:policy/AWSApplicationAutoscalingECSServicePolicy"
 }
 
