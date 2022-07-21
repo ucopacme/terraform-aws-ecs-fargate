@@ -28,8 +28,8 @@ module "ecs_task_def" {
     security_groups = var.security_groups
     min_capacity = var.min_capacity
     max_capacity = var.max_capacity
-    threshold  = var.threshold_high
-    threshold   = var.threshold_low
+    threshold_high = var.threshold_high
+    threshold_low   = var.threshold_low
     #depends_on = module.alb.http_tcp_listener_arns
     #depends_on = [module.alb.target_group_arns]
     tags = var.tags
