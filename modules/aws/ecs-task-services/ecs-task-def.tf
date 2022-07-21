@@ -38,6 +38,7 @@ resource "aws_ecs_service" "this" {
   # task_definition = "${aws_ecs_task_definition.this.id}"
   task_definition = "${aws_ecs_task_definition.this.family}:${max(aws_ecs_task_definition.this.revision, data.aws_ecs_task_definition.this.revision)}"
   cluster         = var.cluster
+  tags = var.tags
 
   load_balancer {
     target_group_arn = var.target_group_arn
@@ -67,7 +68,7 @@ resource "aws_ecs_service" "this" {
     ignore_changes = [task_definition,load_balancer,network_configuration]
     # create_before_destroy = true
   }
-  tags = var.tags
+  
 
   #depends_on = [var.http_tcp_listener_arns]
 }
