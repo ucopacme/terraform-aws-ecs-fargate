@@ -6,7 +6,7 @@
 # # }
 
 resource "aws_s3_bucket" "pipeline" {
-  bucket = "${var.service_name}-codepipeline-bucketkk"
+  bucket = "${var.name}-codepipeline-bucketkk"
   
   server_side_encryption_configuration {
     rule {
@@ -19,14 +19,14 @@ resource "aws_s3_bucket" "pipeline" {
   policy = <<POLICY
 {
   "Version": "2012-10-17",
-  "Id": "${var.service_name}Codepipeline",
+  "Id": "${var.name}Codepipeline",
   "Statement": [
         {
             "Sid": "DenyUnEncryptedObjectUploads",
             "Effect": "Deny",
             "Principal": "*",
             "Action": "s3:PutObject",
-            "Resource": "arn:aws:s3:::${var.service_name}-codepipeline-bucketkk/*",
+            "Resource": "arn:aws:s3:::${var.name}-codepipeline-bucketkk/*",
             "Condition": {
                 "StringNotEquals": {
                     "s3:x-amz-server-side-encryption": "aws:kms"
@@ -38,7 +38,7 @@ resource "aws_s3_bucket" "pipeline" {
             "Effect": "Deny",
             "Principal": "*",
             "Action": "s3:*",
-            "Resource": "arn:aws:s3:::${var.service_name}-codepipeline-bucketkk/*",
+            "Resource": "arn:aws:s3:::${var.name}-codepipeline-bucketkk/*",
             "Condition": {
                 "Bool": {
                     "aws:SecureTransport": "false"
@@ -64,7 +64,7 @@ data "aws_iam_policy_document" "assume_by_pipeline" {
 }
 
 resource "aws_iam_role" "pipeline" {
-  name = "${var.service_name}-pipeline-ecs-service-role"
+  name = "${var.name}-pipeline-ecs-service-role"
   assume_role_policy = "${data.aws_iam_policy_document.assume_by_pipeline.json}"
 }
 
@@ -157,11 +157,11 @@ resource "aws_iam_role_policy" "pipeline" {
 }
 
 resource "aws_codepipeline" "this" {
-  name = "${var.service_name}-pipeline"
+  name = "${var.name}-pipeline"
   role_arn = "${aws_iam_role.pipeline.arn}"
 
   artifact_store {
-    location = "${var.service_name}-codepipeline-bucketkk"
+    location = "${var.name}-codepipeline-bucketkk"
     type = "S3"
   }
 
@@ -214,8 +214,8 @@ resource "aws_codepipeline" "this" {
       version = "1"
 
       configuration = {
-        ApplicationName = "${var.service_name}-service-deploy"
-        DeploymentGroupName = "${var.service_name}-service-deploy-group"
+        ApplicationName = "${var.name}-service-deploy"
+        DeploymentGroupName = "${var.name}-service-deploy-group"
         Image1ArtifactName = "BuildArtifact"
         Image1ContainerName = "IMAGE1_NAME"
         TaskDefinitionTemplateArtifact = "BuildArtifact"

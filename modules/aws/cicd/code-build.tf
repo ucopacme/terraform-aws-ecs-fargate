@@ -12,7 +12,7 @@ data "aws_iam_policy_document" "assume_by_codebuild" {
 }
 
 resource "aws_iam_role" "codebuild" {
-  name               = "${var.service_name}-codebuild"
+  name               = "${var.name}-codebuild"
   assume_role_policy = "${data.aws_iam_policy_document.assume_by_codebuild.json}"
 }
 
@@ -96,7 +96,7 @@ resource "aws_iam_role_policy" "codebuild" {
 
 resource "aws_codebuild_project" "this" {
   name         = "${var.service_name}-codebuild"
-  description  = "Codebuild for the ECS Green/Blue ${var.service_name} app"
+  description  = "Codebuild for the ECS Green/Blue ${var.name} app"
   service_role = "${aws_iam_role.codebuild.arn}"
 
   artifacts {
@@ -111,7 +111,7 @@ resource "aws_codebuild_project" "this" {
 
     environment_variable {
       name  = "IMAGE_REPO_NAME"
-      value = "944706592399.dkr.ecr.us-west-2.amazonaws.com/my-first-ecr-repo"
+      value = "944706592399.dkr.ecr.us-west-2.amazonaws.com/ecs-last-test"
     }
 
     environment_variable {

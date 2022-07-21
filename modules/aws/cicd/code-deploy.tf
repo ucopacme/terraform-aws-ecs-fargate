@@ -12,7 +12,7 @@ data "aws_iam_policy_document" "assume_by_codedeploy" {
 }
 
 resource "aws_iam_role" "codedeploy" {
-  name               = "${var.service_name}-codedeploy"
+  name               = "${var.name}-codedeploy"
   assume_role_policy = "${data.aws_iam_policy_document.assume_by_codedeploy.json}"
 }
 
@@ -72,12 +72,12 @@ resource "aws_iam_role_policy" "codedeploy" {
 
 resource "aws_codedeploy_app" "this" {
   compute_platform = "ECS"
-  name             = "${var.service_name}-service-deploy"
+  name             = "${var.name}-service-deploy"
 }
 
 resource "aws_codedeploy_deployment_group" "this" {
   app_name               = "${aws_codedeploy_app.this.name}"
-  deployment_group_name  = "${var.service_name}-service-deploy-group"
+  deployment_group_name  = "${var.name}-service-deploy-group"
   deployment_config_name = "CodeDeployDefault.ECSAllAtOnce"
   service_role_arn       = "${aws_iam_role.codedeploy.arn}"
 
@@ -93,8 +93,8 @@ resource "aws_codedeploy_deployment_group" "this" {
   }
 
   ecs_service {
-    cluster_name = "${aws_ecs_cluster.this.name}"
-    service_name = "${aws_ecs_service.this.name}"
+    cluster_name = "chs-dev-ecs-cluster"
+    service_name = "chs-dev-service"
   }
 
   deployment_style {
@@ -105,16 +105,16 @@ resource "aws_codedeploy_deployment_group" "this" {
   load_balancer_info {
     target_group_pair_info {
       prod_traffic_route {
-        listener_arns = ["${aws_lb_listener.this.arn}"]
+        listener_arns = ["arn:aws:elasticloadbalancing:us-west-2:944706592399:listener/app/test-dev-alb/9cadac78a79001a0/bf6dd2a5634660a4"]
       }
 
       target_group {
-        name = "${aws_lb_target_group.this.*.name[0]}"
+        name = "test-dev-0-alb-tg"
         # name = "${aws_lb_target_group.blue.name}"
       }
 
       target_group {
-        name = "${aws_lb_target_group.this.*.name[1]}"
+        name = "test-dev-1-alb-tg"
         # name = "${aws_lb_target_group.green.name}"
       }
       
