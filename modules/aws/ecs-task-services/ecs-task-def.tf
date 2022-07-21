@@ -87,13 +87,33 @@ resource "aws_cloudwatch_log_stream" "cb_log_stream" {
 
 # auto_scaling
 
+data "aws_iam_policy_document" "assume_by_ecs" {
+  statement {
+    sid     = "AllowAssumeByEcsTasks"
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
 
+    principals {
+      type        = "Service"
+      identifiers = ["ecs.application-autoscaling.amazonaws.com"]
+    }
+  }
+}
+resource "aws_iam_role" "autoscaling_role" {
+  name               = "${var.name}_ecsTaskExecutionRole"
+  assume_role_policy = data.aws_iam_policy_document.assume_by_ecs.json
+}
+
+resource "aws_iam_role_policy_attachment" "role" {
+  role       = join("", aws_iam_role.autoscaling_role.name)
+  policy_arn = "arn:aws:iam::aws:policy/AWSApplicationAutoscalingECSServicePolicy"
+}
 
 resource "aws_appautoscaling_target" "target" {
   service_namespace  = "ecs"
   resource_id = "service/${var.cluster_name}/${aws_ecs_service.this.name}"
   scalable_dimension = "ecs:service:DesiredCount"
-  role_arn           = "arn:aws:iam::944706592399:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling_kk-test"
+  role_arn           = aws_iam_role.autoscaling_role.arn
   min_capacity       = 1
   max_capacity       = 4
 }
