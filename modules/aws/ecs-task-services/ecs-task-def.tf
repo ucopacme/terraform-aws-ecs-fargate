@@ -67,22 +67,21 @@ resource "aws_ecs_service" "this" {
     ignore_changes = [task_definition,load_balancer,network_configuration]
     # create_before_destroy = true
   }
+  tags = var.tags
 
   #depends_on = [var.http_tcp_listener_arns]
 }
 
 # Set up CloudWatch group and log stream and retain logs for 30 days
 resource "aws_cloudwatch_log_group" "cb_log_group" {
-  name              = "/ecs/cb-app"
+  name              = join("-", [var.name, "ecs-cb"])
   retention_in_days = 30
 
-  tags = {
-    Name = "cb-log-group"
-  }
+  tags = var.tags
 }
 
 resource "aws_cloudwatch_log_stream" "cb_log_stream" {
-  name           = "cb-log-stream"
+  name           = join("-", [var.name, "ecs-log-stream"])
   log_group_name = aws_cloudwatch_log_group.cb_log_group.name
 }
 
