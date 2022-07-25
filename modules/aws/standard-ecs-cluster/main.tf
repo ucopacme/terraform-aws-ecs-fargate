@@ -36,9 +36,9 @@ module "ecs_task_def" {
     
 }
 
-module "cicd" {
-    source = "../cicd"
-    name = var.name
-}
+#module "cicd" {
+ #   source = "../cicd"
+  #  name = var.name
+#}
 
   
