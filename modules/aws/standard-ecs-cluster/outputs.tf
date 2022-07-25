@@ -27,6 +27,11 @@ output "revision" {
   description = "The revision of the task in a particular family"
   value       = module.ecs_task_def.revision
 }
+ 
+output "ecs_service_name" {
+  value       = module.ecs_task_def.ecs_service_name
+  description = "The name of the service."
+}
 
 #output "target_group_arns" {
  # description = "ARNs of the target groups. Useful for passing to your Auto Scaling group."
