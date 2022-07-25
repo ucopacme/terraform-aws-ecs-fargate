@@ -22,23 +22,24 @@ data "aws_iam_policy_document" "execution_role" {
       "ecr:GetDownloadUrlForLayer",
       "ecr:BatchGetImage",
       "logs:CreateLogStream",
-      "logs:PutLogEvents"
+      "logs:PutLogEvents",
+      "ecs:DescribeClusters"
     ]
 
     resources = ["*"]
   }
 }
 
-data "aws_iam_policy_document" "task_role" {
-  statement {
-    sid    = "AllowDescribeCluster"
-    effect = "Allow"
+#data "aws_iam_policy_document" "task_role" {
+ # statement {
+  #  sid    = "AllowDescribeCluster"
+   # effect = "Allow"
 
-    actions = ["ecs:DescribeClusters"]
+    #actions = ["ecs:DescribeClusters"]
 
-    resources = [aws_ecs_cluster.this.arn]
-  }
-}
+    #resources = [aws_ecs_cluster.this.arn]
+  #}
+#}
 
 resource "aws_iam_role" "execution_role" {
   name               = "${var.name}_ecsTaskExecutionRole"
@@ -50,15 +51,15 @@ resource "aws_iam_role_policy" "execution_role" {
   policy = data.aws_iam_policy_document.execution_role.json
 }
 
-resource "aws_iam_role" "task_role" {
-  name               = "${var.name}_ecsTaskRole"
-  assume_role_policy = data.aws_iam_policy_document.assume_by_ecs.json
-}
+#resource "aws_iam_role" "task_role" {
+# name               = "${var.name}_ecsTaskRole"
+ # assume_role_policy = data.aws_iam_policy_document.assume_by_ecs.json
+#}
 
-resource "aws_iam_role_policy" "task_role" {
-  role   = aws_iam_role.task_role.name
-  policy = data.aws_iam_policy_document.task_role.json
-}
+#resource "aws_iam_role_policy" "task_role" {
+ # role   = aws_iam_role.task_role.name
+  #policy = data.aws_iam_policy_document.task_role.json
+#}
 
 resource "aws_ecs_cluster" "this" {
   name = join("-", [var.name, "cluster"])
