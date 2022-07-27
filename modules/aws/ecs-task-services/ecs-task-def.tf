@@ -27,6 +27,12 @@ resource "aws_ecs_task_definition" "this" {
             },
       "image": "${var.image}",
       "essential": true,
+      "mountPoints": [
+          {
+              "containerPath": "/mnt/efs",
+              "sourceVolume": "efs-test"
+          }
+      ],
       "portMappings": [
         {
           "containerPort": ${var.containerport},
