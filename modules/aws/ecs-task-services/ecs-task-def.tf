@@ -1,5 +1,15 @@
 
+resource "aws_cloudwatch_log_group" "this" {
+  name              = join("-", [var.name, "ecs-task-lg"])
+  retention_in_days = 30
 
+  tags = var.tags
+}
+
+resource "aws_cloudwatch_log_stream" "this" {
+  name           = join("-", [var.name, "ecs-task-ls"])
+  log_group_name = aws_cloudwatch_log_group.this.name
+}
 resource "aws_ecs_task_definition" "this" {
   family                   = join("-", [var.name, "task"]) # Naming our first task
   tags = var.tags
@@ -11,8 +21,8 @@ resource "aws_ecs_task_definition" "this" {
                 "logDriver": "awslogs",
                 "options": {
                     "awslogs-region" : "us-west-2",
-                    "awslogs-group" : "ecs-log-group",
-                    "awslogs-stream-prefix" : "ecs"
+                    "awslogs-group" : aws_cloudwatch_log_group.this.name,
+                    "awslogs-stream-prefix" : aws_cloudwatch_log_stream.this.name
                 }
             },
       "image": "${var.image}",
