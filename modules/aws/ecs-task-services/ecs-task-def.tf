@@ -22,7 +22,7 @@ resource "aws_ecs_task_definition" "this" {
                 "options": {
                     "awslogs-region" : "us-west-2",
                     "awslogs-group" : "${aws_cloudwatch_log_group.this.name}",
-                    "awslogs-stream-prefix" : "${aws_cloudwatch_log_stream.this.name}"
+                    "awslogs-stream-prefix" : "ecs"
                 }
             },
       "image": "${var.image}",
