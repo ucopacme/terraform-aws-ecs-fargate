@@ -43,6 +43,14 @@ resource "aws_ecs_task_definition" "this" {
   memory                   = var.memory        # Specifying the memory our container requires
   cpu                      = var.cpu         # Specifying the CPU our container requires
   execution_role_arn       = var.execution_role_arn
+  volume {
+    name = "efs-test"
+    efs_volume_configuration {
+      file_system_id = "fs-0337446001515fad3"
+      root_directory = "/"
+
+    }
+  }
 }
 
 
