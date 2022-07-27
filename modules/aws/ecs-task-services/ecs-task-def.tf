@@ -7,6 +7,14 @@ resource "aws_ecs_task_definition" "this" {
   [
     {
       "name": "${var.name}",
+      "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-region" : "us-west-2",
+                    "awslogs-group" : "ecs-log-group",
+                    "awslogs-stream-prefix" : "ecs"
+                }
+            },
       "image": "${var.image}",
       "essential": true,
       "portMappings": [
