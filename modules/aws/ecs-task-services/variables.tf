@@ -8,19 +8,8 @@ variable "image" {
   #type        = any
 #}
 
-
-
 variable "mount_points" {
-  type = list(object({
-    containerPath = string
-    sourceVolume = string
-  }))
-  default = [
-    {
-      containerPath = ""
-      sourceVolume = "efs-volume"
-    }
-  ]
+type = string
 }
 variable "efs_file_system_id" {
   description = "Task def image name"
