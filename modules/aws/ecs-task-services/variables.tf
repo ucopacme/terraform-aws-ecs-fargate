@@ -2,6 +2,16 @@ variable "image" {
   description = "Task def image name"
   type        = string
 }
+
+variable "container_mount_path" {
+  description = "Task def image name"
+  type        = string
+}
+
+variable "efs_file_system_id" {
+  description = "Task def image name"
+  type        = string
+}
 variable "desired_count" {
   description = ""
   type        = string
