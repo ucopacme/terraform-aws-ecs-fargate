@@ -30,7 +30,7 @@ resource "aws_ecs_task_definition" "this" {
       "mountPoints": [
           {
               "containerPath": "/mnt/efs",
-              "sourceVolume": join("-", [var.name, "efs-volume"])
+              "sourceVolume": ${join("-", [var.name, "efs-volume"])}
           }
       ],
       "portMappings": [
