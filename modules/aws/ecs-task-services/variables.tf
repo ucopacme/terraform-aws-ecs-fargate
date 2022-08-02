@@ -17,6 +17,10 @@ variable "efs_file_system_id" {
   type        = string
   default = ""
 }
+variable "volume_name" {
+type = string
+default = ""
+}
 variable "desired_count" {
   description = ""
   type        = string
