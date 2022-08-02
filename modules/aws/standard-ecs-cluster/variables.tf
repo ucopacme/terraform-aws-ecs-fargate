@@ -22,7 +22,7 @@ variable "mount_points" {
   default = [
     {
       containerPath = ""
-      sourceVolume = "efs-volume
+      sourceVolume = "efs-volume"
     }
   ]
 }
