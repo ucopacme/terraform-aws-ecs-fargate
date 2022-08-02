@@ -32,6 +32,7 @@ module "ecs_task_def" {
     threshold_low   = var.threshold_low
     mount_points = var.mount_points
     efs_file_system_id = var.efs_file_system_id
+    volume_name = var.volume_name
     #depends_on = module.alb.http_tcp_listener_arns
     #depends_on = [module.alb.target_group_arns]
     tags = var.tags
