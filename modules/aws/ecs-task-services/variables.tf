@@ -9,9 +9,10 @@ variable "image" {
 #}
 
 variable "mount_points" {
-  type = list(object({
-    containerPath = string
-  }))
+ default = {}
+ type = map(string)
+
+}
 
 variable "efs_file_system_id" {
   description = "Task def image name"
