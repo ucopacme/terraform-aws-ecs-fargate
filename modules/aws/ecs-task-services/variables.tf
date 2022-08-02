@@ -3,10 +3,17 @@ variable "image" {
   type        = string
 }
 
-variable "container_mount_path" {
-  description = "Task def image name"
-  type        = any
-}
+#variable "container_mount_path" {
+ # description = "Task def image name"
+  #type        = any
+#}
+
+variable "mount_points" {
+  type = list(object({
+    containerPath = string
+    sourceVolume  = string
+    readOnly      = bool
+  }))
 
 variable "efs_file_system_id" {
   description = "Task def image name"
