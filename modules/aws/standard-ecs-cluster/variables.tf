@@ -19,6 +19,11 @@ type = string
 default = ""
 }
 
+variable "volume_name" {
+type = string
+default = ""
+}
+
 variable "efs_file_system_id" {
   description = "Task def image name"
   type        = string
