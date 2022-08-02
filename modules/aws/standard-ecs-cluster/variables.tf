@@ -24,6 +24,11 @@ type = string
 default = ""
 }
 
+variable "root_directory" {
+type = string
+default = ""
+}
+
 variable "efs_file_system_id" {
   description = "Task def image name"
   type        = string
