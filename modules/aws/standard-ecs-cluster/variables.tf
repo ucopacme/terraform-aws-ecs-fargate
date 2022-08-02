@@ -16,12 +16,13 @@ variable "min_capacity" {
 
 variable "mount_points"{
 type = string
-default = "//mnt//ef"
+default = null
 }
 
 variable "efs_file_system_id" {
   description = "Task def image name"
   type        = string
+  default = null
 }
 variable "max_capacity" {
   description = ""
