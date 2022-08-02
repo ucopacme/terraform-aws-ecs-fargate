@@ -5,7 +5,7 @@ variable "image" {
 
 variable "container_mount_path" {
   description = "Task def image name"
-  type        = string(any)
+  type        = any
 }
 
 variable "efs_file_system_id" {
