@@ -14,23 +14,10 @@ variable "min_capacity" {
   type        = string
 }
 
-variable "mount_points" {
-  type = list(object({
-    containerPath =  string
-    sourceVolume = string
-  }))
-  default = [
-    {
-      containerPath = ""
-      sourceVolume = "efs-volume"
-    }
-  ]
+variable "mount_points"{
+type = string
 }
-#variable "container_mount_path" {
- # description = "Task def image name"
-  #type        = any
-#}
-  
+
 variable "efs_file_system_id" {
   description = "Task def image name"
   type        = string
