@@ -53,7 +53,7 @@ resource "aws_ecs_task_definition" "this" {
     name = var.volume_name
     efs_volume_configuration {
       file_system_id = var.efs_file_system_id
-      root_directory = "/"
+      root_directory = var.root_directory
 
     }
   }
