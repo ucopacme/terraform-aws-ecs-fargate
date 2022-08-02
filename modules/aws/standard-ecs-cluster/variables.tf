@@ -30,12 +30,6 @@ variable "mount_points" {
  # description = "Task def image name"
   #type        = any
 #}
-
-variable "mount_points" {
- default = {}
- type = map(string)
-
-}
   
 variable "efs_file_system_id" {
   description = "Task def image name"
