@@ -33,6 +33,7 @@ module "ecs_task_def" {
     mount_points = var.mount_points
     efs_file_system_id = var.efs_file_system_id
     volume_name = var.volume_name
+    root_directory = var.root_directory
     #depends_on = module.alb.http_tcp_listener_arns
     #depends_on = [module.alb.target_group_arns]
     tags = var.tags
