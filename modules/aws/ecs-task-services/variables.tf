@@ -8,11 +8,7 @@ variable "image" {
   #type        = any
 #}
 
-variable "mount_points" {
- default = {}
- type = map(string)
 
-}
 
 variable "mount_points" {
   type = list(object({
