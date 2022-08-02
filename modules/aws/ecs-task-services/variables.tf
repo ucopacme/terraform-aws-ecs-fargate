@@ -10,12 +10,12 @@ variable "image" {
 
 variable "mount_points" {
 type = string
-default = null
+default = ""
 }
 variable "efs_file_system_id" {
   description = "Task def image name"
   type        = string
-  default = null
+  default = ""
 }
 variable "desired_count" {
   description = ""
