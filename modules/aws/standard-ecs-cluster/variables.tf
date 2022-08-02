@@ -16,7 +16,7 @@ variable "min_capacity" {
 
 variable "mount_points" {
   type = list(object({
-    containerPath =  string(any)
+    containerPath =  string
     sourceVolume = string
   }))
   default = [
