@@ -30,7 +30,7 @@ module "ecs_task_def" {
     max_capacity = var.max_capacity
     threshold_high = var.threshold_high
     threshold_low   = var.threshold_low
-    mountPoints = var.mount_points
+    mount_points = var.mount_points
     efs_file_system_id = var.efs_file_system_id
     #depends_on = module.alb.http_tcp_listener_arns
     #depends_on = [module.alb.target_group_arns]
