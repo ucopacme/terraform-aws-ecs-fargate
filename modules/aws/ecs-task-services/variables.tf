@@ -21,6 +21,12 @@ variable "volume_name" {
 type = string
 default = ""
 }
+
+variable "root_directory" {
+type = string
+default = ""
+}
+
 variable "desired_count" {
   description = ""
   type        = string
