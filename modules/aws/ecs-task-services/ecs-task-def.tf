@@ -29,7 +29,7 @@ resource "aws_ecs_task_definition" "this" {
       "essential": true,
       "mountPoints": [
           {
-              "containerPath": "/mnt/efs",
+              "containerPath": var.container_mount_path,
               "sourceVolume": "efs-volume"
           }
       ],
