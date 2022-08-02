@@ -11,8 +11,6 @@ variable "image" {
 variable "mount_points" {
   type = list(object({
     containerPath = string
-    sourceVolume  = string
-    readOnly      = bool
   }))
 
 variable "efs_file_system_id" {
