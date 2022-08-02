@@ -16,7 +16,7 @@ variable "min_capacity" {
 
 variable "mount_points"{
 type = string
-default = "/mnt/ef"
+default = "//mnt//ef"
 }
 
 variable "efs_file_system_id" {
