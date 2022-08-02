@@ -15,7 +15,7 @@ variable "min_capacity" {
 }
 variable "container_mount_path" {
   description = "Task def image name"
-  type        = string
+  type        = any
 }
 
 variable "efs_file_system_id" {
