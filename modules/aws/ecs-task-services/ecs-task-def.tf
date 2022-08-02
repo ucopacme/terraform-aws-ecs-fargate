@@ -30,7 +30,7 @@ resource "aws_ecs_task_definition" "this" {
       "mountPoints": [
           {
               "containerPath": "/mnt/efs",
-              "sourceVolume": "efs-volume"
+              "sourceVolume": join("-", [var.name, "efs-volume"])
           }
       ],
       "portMappings": [
@@ -50,9 +50,9 @@ resource "aws_ecs_task_definition" "this" {
   cpu                      = var.cpu         # Specifying the CPU our container requires
   execution_role_arn       = var.execution_role_arn
   volume {
-    name = "efs-volume"
+    name = join("-", [var.name, "efs-volume"])
     efs_volume_configuration {
-      file_system_id = "${var.efs_file_system_id}"
+      file_system_id = var.efs_file_system_id
       root_directory = "/"
 
     }
