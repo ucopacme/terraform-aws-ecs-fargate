@@ -208,7 +208,7 @@ resource "aws_cloudwatch_log_stream" "cb_log_stream" {
 module "ecs-autoscaling" {
   count = var.enable_autoscaling ? 1 : 0
 
-  source  = "git::https://git@github.com/ahmadzaikk/terraform-aws-ecs-auto-scaling"
+  source  = "git::https://git@github.com/ucopacme/terraform-aws-ecs-fargate-auto-scaling"
   #version = "1.0.6"
 
   name                      = var.name
