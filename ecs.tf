@@ -89,7 +89,7 @@ locals {
   task_container_mount_points  = concat([for v in var.efs_volumes : { containerPath = v.mount_point, readOnly = v.readOnly, sourceVolume = v.name }], var.mount_points)
 
   log_configuration_options = merge({
-    "awslogs-group"         = var.log_group_name != "" ? var.log_group_name : aws_cloudwatch_log_group.main.0.name,
+    "awslogs-group"         = var.log_group_name != "" ? var.log_group_name : aws_cloudwatch_log_group.this.name,
     "awslogs-region"        = "us-west-2"
     "awslogs-stream-prefix" = "container"
   }, local.log_multiline_pattern)
