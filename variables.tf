@@ -7,7 +7,16 @@ variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
 }
-
+variable "log_group_name" {
+  description = "The name of the provided CloudWatch Logs log group to use."
+  default     = ""
+  type        = string
+}
+variable "log_multiline_pattern" {
+  description = "Optional regular expression. Log messages will consist of a line that matches expression and any following lines that don't"
+  default     = ""
+  type        = string
+}
 variable "alb_sg" {
   description = "The security groups to attach to the load balancer. e.g. [\"sg-edcd9784\",\"sg-edcd9785\"]"
   type        = list(string)
