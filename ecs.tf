@@ -23,7 +23,11 @@ data "aws_iam_policy_document" "execution_role" {
       "ecr:BatchGetImage",
       "logs:CreateLogStream",
       "logs:PutLogEvents",
-      "ecs:DescribeClusters"
+      "ecs:DescribeClusters",
+      "ssmmessages:CreateControlChannel",
+      "ssmmessages:CreateDataChannel",
+      "ssmmessages:OpenControlChannel",
+      "ssmmessages:OpenDataChannel"
     ]
 
     resources = ["*"]
