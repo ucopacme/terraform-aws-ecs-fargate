@@ -228,14 +228,11 @@ variable "subnets" {
 
 
 variable "target_group_arn" {
-  description = "task df cpu"
+  description = "target group arn"
   type        = string
 }
 
-variable "target_group_arn" {
-  description = "task df cpu"
-  type        = string
-}
+
 variable "linux_parameters" {
   type = object({
     initProcessEnabled = bool
