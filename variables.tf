@@ -66,6 +66,12 @@ variable "container_port" {
  
 }
 
+variable "enable_execute_command" {
+  description = "(Optional) If true, autoscaling alarms will be created."
+  type        = bool
+  default     = false
+}
+
 variable "enable_autoscaling" {
   description = "(Optional) If true, autoscaling alarms will be created."
   type        = bool
@@ -226,3 +232,14 @@ variable "target_group_arn" {
   type        = string
 }
 
+variable "target_group_arn" {
+  description = "task df cpu"
+  type        = string
+}
+variable "linux_parameters" {
+  type = object({
+    initProcessEnabled = bool
+  })
+  description = "Linux-specific modifications that are applied to the container, such as Linux kernel capabilities. For more details, see https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_LinuxParameters.html"
+  default     = null
+}
