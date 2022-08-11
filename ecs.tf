@@ -106,6 +106,7 @@ locals {
     "stopTimeout"  = var.stop_timeout
     "command"      = var.task_container_command
     "MountPoints"  = local.task_container_mount_points
+    "linuxParameters"   = var.linux_parameters
     "logConfiguration" = {
       "logDriver" = "awslogs"
       "options"   = local.log_configuration_options
@@ -158,6 +159,7 @@ resource "aws_ecs_service" "this" {
   name = join("-", [var.name, "service"])
   task_definition = "${aws_ecs_task_definition.this.family}:${max(aws_ecs_task_definition.this.revision, data.aws_ecs_task_definition.this.revision)}"
   cluster         = aws_ecs_cluster.this.arn
+  enable_execute_command = var.enable_execute_command
   tags = var.tags
 
   load_balancer {
