@@ -2,6 +2,20 @@ variable "name" {
   description = "name, to be used as prefix for all resource names"
   type        = string
 }
+variable "readonlyRootFilesystem" {
+  default     = false
+  description = "When this parameter is true, the container is given read-only access to its root file system"
+}
+variable "containerInsights" {
+  description = "Enables container insights if true"
+  type        = bool
+  default     = false
+}
+variable "enable_ecs_cluster" {
+  description = "Set to false to prevent the module from creating ecs cluster"
+  type        = bool
+  default     = true
+}
 variable "tags" {
   default     = {}
   description = "A map of tags to add to all resources"
@@ -59,6 +73,7 @@ variable "task_container_port" {
   type        = number
   default     = 0
 }
+
 
 variable "container_port" {
   description = "Port that the container exposes."
@@ -194,6 +209,11 @@ variable "cluster" {
   description = "The resource name."
   type        = string
   default     = null
+}
+
+variable "cluster_arn" {
+  description = "name, to be used as prefix for all resource names"
+  type        = string
 }
 variable "cluster_name" {
   description = "The resource name."
