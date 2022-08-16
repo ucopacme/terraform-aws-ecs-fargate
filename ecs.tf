@@ -66,8 +66,16 @@ resource "aws_iam_role_policy" "execution_role" {
 #}
 
 resource "aws_ecs_cluster" "this" {
+  count = var.enable_ecs_cluster ? 1 : 0
   name = join("-", [var.name, "cluster"])
   tags = var.tags
+  dynamic "setting" {
+    for_each = var.containerInsights == true ? [1] : []
+    content {
+      name  = "containerInsights"
+      value = "enabled"
+    }
+  }
 }
 
 
@@ -107,6 +115,7 @@ locals {
     "command"      = var.task_container_command
     "MountPoints"  = local.task_container_mount_points
     "linuxParameters"   = var.linux_parameters
+    "readonlyRootFilesystem" = var.readonlyRootFilesystem 
     "logConfiguration" = {
       "logDriver" = "awslogs"
       "options"   = local.log_configuration_options
@@ -158,7 +167,7 @@ data "aws_ecs_task_definition" "this" {
 resource "aws_ecs_service" "this" {
   name = join("-", [var.name, "service"])
   task_definition = "${aws_ecs_task_definition.this.family}:${max(aws_ecs_task_definition.this.revision, data.aws_ecs_task_definition.this.revision)}"
-  cluster         = aws_ecs_cluster.this.arn
+  cluster         = var.cluster_arn
   enable_execute_command = var.enable_execute_command
   tags = var.tags
 
@@ -214,7 +223,7 @@ module "ecs-autoscaling" {
   #version = "1.0.6"
 
   name                      = var.name
-  ecs_cluster_name          = aws_ecs_cluster.this.name
+  ecs_cluster_name          = var.cluster_name
   ecs_service_name          = aws_ecs_service.this.name
   max_cpu_threshold         = var.max_cpu_threshold
   min_cpu_threshold         = var.min_cpu_threshold
