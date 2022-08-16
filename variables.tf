@@ -16,6 +16,14 @@ variable "enable_ecs_cluster" {
   type        = bool
   default     = true
 }
+variable "environment" {
+  description = "List of port objects that the container exposes in addition to the task_container_port."
+  type = list(object({
+    name = string
+    value      = string
+  }))
+  default = []
+}
 variable "tags" {
   default     = {}
   description = "A map of tags to add to all resources"
