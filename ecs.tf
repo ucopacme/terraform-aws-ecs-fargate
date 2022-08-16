@@ -113,6 +113,7 @@ locals {
     "portMappings" = local.task_container_port_mappings
     "stopTimeout"  = var.stop_timeout
     "command"      = var.task_container_command
+    "environment"  = var.environment
     "MountPoints"  = local.task_container_mount_points
     "linuxParameters"   = var.linux_parameters
     "readonlyRootFilesystem" = var.readonlyRootFilesystem 
