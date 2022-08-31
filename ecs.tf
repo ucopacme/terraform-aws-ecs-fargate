@@ -99,6 +99,8 @@ locals {
     "name"         = var.name
     "image"        = var.image
     "essential"    = true
+    "cpu"          = var.container_cpu
+    "memory"       = var.container_memory
     "portMappings" = local.task_container_port_mappings
     "stopTimeout"  = var.stop_timeout
     "command"      = var.task_container_command
