@@ -34,17 +34,6 @@ data "aws_iam_policy_document" "execution_role" {
   }
 }
 
-#data "aws_iam_policy_document" "task_role" {
- # statement {
-  #  sid    = "AllowDescribeCluster"
-   # effect = "Allow"
-
-    #actions = ["ecs:DescribeClusters"]
-
-    #resources = [aws_ecs_cluster.this.arn]
-  #}
-#}
-
 resource "aws_iam_role" "execution_role" {
   name               = "${var.name}_ecsTaskExecutionRole"
   assume_role_policy = data.aws_iam_policy_document.assume_by_ecs.json
@@ -55,20 +44,23 @@ resource "aws_iam_role_policy" "execution_role" {
   policy = data.aws_iam_policy_document.execution_role.json
 }
 
-#resource "aws_iam_role" "task_role" {
-# name               = "${var.name}_ecsTaskRole"
- # assume_role_policy = data.aws_iam_policy_document.assume_by_ecs.json
-#}
 
-#resource "aws_iam_role_policy" "task_role" {
- # role   = aws_iam_role.task_role.name
-  #policy = data.aws_iam_policy_document.task_role.json
-#}
 
 resource "aws_ecs_cluster" "this" {
   count = var.enable_ecs_cluster ? 1 : 0
   name = join("-", [var.name, "cluster"])
   tags = var.tags
+  configuration {
+  execute_command_configuration {
+      #kms_key_id = aws_kms_key.example.arn
+      logging    = "OVERRIDE"
+
+      log_configuration {
+        cloud_watch_encryption_enabled = false
+        cloud_watch_log_group_name     = var.log_group_name != "" ? var.log_group_name : aws_cloudwatch_log_group.exec.name
+      }
+    }
+  }
   dynamic "setting" {
     for_each = var.containerInsights == true ? [1] : []
     content {
@@ -87,10 +79,7 @@ resource "aws_cloudwatch_log_group" "this" {
   tags = var.tags
 }
 
-resource "aws_cloudwatch_log_stream" "this" {
-  name           = join("-", [var.name, "ecs-task-ls"])
-  log_group_name = aws_cloudwatch_log_group.this.name
-}
+
 
 locals {
   log_multiline_pattern        = var.log_multiline_pattern != "" ? { "awslogs-multiline-pattern" = var.log_multiline_pattern } : null
@@ -108,7 +97,7 @@ locals {
 
   container_definition = merge({
     "name"         = var.name
-    "image"        = var.image,
+    "image"        = var.image
     "essential"    = true
     "portMappings" = local.task_container_port_mappings
     "stopTimeout"  = var.stop_timeout
@@ -171,7 +160,7 @@ resource "aws_ecs_service" "this" {
   cluster         = var.cluster_arn
   enable_execute_command = var.enable_execute_command
   tags = var.tags
-
+  propagate_tags = "TASK_DEFINITION"
   load_balancer {
     target_group_arn = var.target_group_arn
     container_name   = var.name
