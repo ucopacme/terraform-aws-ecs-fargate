@@ -11,6 +11,17 @@ variable "containerInsights" {
   type        = bool
   default     = false
 }
+variable "container_cpu" {
+  type        = number
+  default     = null
+  description = "How much CPU to give the container. 1024 is 1 CPU"
+}
+
+variable "container_memory" {
+  type        = number
+  default     = null
+  description = "How much memory in megabytes to give the container"
+}
 variable "enable_ecs_cluster" {
   description = "Set to false to prevent the module from creating ecs cluster"
   type        = bool
