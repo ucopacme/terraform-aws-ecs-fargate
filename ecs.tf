@@ -27,7 +27,11 @@ data "aws_iam_policy_document" "execution_role" {
       "ssmmessages:CreateControlChannel",
       "ssmmessages:CreateDataChannel",
       "ssmmessages:OpenControlChannel",
-      "ssmmessages:OpenDataChannel"
+      "ssmmessages:OpenDataChannel",
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:DescribeSecret",
+      "secretsmanager:List*",
+      "secretsmanager:GetResourcePolicy"
     ]
 
     resources = ["*"]
@@ -109,6 +113,7 @@ locals {
     "stopTimeout"  = var.stop_timeout
     "command"      = var.task_container_command
     "environment"  = var.environment
+    "secrets"      = var.secrets
     "MountPoints"  = local.task_container_mount_points
     "linuxParameters"   = var.linux_parameters
     "readonlyRootFilesystem" = var.readonlyRootFilesystem 
