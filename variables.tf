@@ -40,6 +40,15 @@ variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
 }
+
+variable "secrets" {
+  description = "List of port objects that the container exposes in addition to the task_container_port."
+  type = list(object({
+    name = string
+    valueFrom = string
+  }))
+  default = []
+}
 variable "log_group_name" {
   description = "The name of the provided CloudWatch Logs log group to use."
   default     = ""
