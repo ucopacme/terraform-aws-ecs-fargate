@@ -78,13 +78,13 @@ resource "aws_ecs_cluster" "this" {
 
 resource "aws_cloudwatch_log_group" "this" {
   name              = join("-", [var.name, "ecs-task-lg"])
-  retention_in_days = var.log_retention
+  retention_in_days = var.retention_in_days
   tags = var.tags
 }
 
 resource "aws_cloudwatch_log_group" "exec" {
   name              = join("-", [var.name, "ecs-exec-lg"])
-  retention_in_days = var.log_retention
+  retention_in_days = var.retention_in_days
   tags = var.tags
 }
 
@@ -205,7 +205,7 @@ resource "aws_ecs_service" "this" {
 # Set up CloudWatch group and log stream and retain logs for 30 days
 resource "aws_cloudwatch_log_group" "cb_log_group" {
   name              = join("-", [var.name, "ecs-cb"])
-  retention_in_days = var.log_retention
+  retention_in_days = var.retention_in_days
 
   tags = var.tags
 }
