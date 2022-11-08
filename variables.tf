@@ -101,11 +101,12 @@ variable "task_container_port" {
   type        = number
   default     = 0
 }
-variable "log_retention" {
+
+variable "retention_in_days" {
   description = "log group retention."
   default     = 30
+  type        = number
 }
-
 variable "container_port" {
   description = "Port that the container exposes."
   type        = number
