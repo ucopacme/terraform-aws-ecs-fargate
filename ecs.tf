@@ -187,7 +187,15 @@ resource "aws_ecs_service" "this" {
   deployment_controller {
     type = "CODE_DEPLOY"
   }
-  
+  deployment_configuration{
+  deployment_circuit_breaker{
+    enable=true
+    rollback=true
+  }
+    maximum_percent = 100
+    minimum_healthy_percent = 100
+    
+  }
   network_configuration {
     subnets          = var.subnets
     assign_public_ip = var.assign_public_ip # Providing our containers with public IPs
