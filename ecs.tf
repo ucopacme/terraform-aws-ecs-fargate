@@ -187,11 +187,12 @@ resource "aws_ecs_service" "this" {
   deployment_controller {
     type = "CODE_DEPLOY"
   }
+  ### Deployment circuit breaker is not support with code_deploy controller
   
-  deployment_circuit_breaker{
-    enable=true
-    rollback=true
-  }
+  #deployment_circuit_breaker{
+   # enable=true
+    #rollback=true
+  #}
    
   network_configuration {
     subnets          = var.subnets
