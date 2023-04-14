@@ -116,7 +116,7 @@ locals {
   log_configuration_options = merge({
     "awslogs-group"         = aws_cloudwatch_log_group.this.name
     "awslogs-region"        = "us-west-2"
-    "awslogs-stream-prefix" = "container"
+    "awslogs-stream-prefix" = var.awslogs_stream_prefix
   }, local.task_log_multiline_pattern)
 
   container_definition = merge({

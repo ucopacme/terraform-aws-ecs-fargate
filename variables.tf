@@ -89,6 +89,11 @@ variable "task_log_multiline_pattern" {
   default     = ""
   type        = string
 }
+variable "awslogs_stream_prefix" {
+  description = "CloudWatch Logs log stream prefix for ECS task logs."
+  default     = "container"
+  type        = string
+}
 variable "alb_sg" {
   description = "The security groups to attach to the load balancer. e.g. [\"sg-edcd9784\",\"sg-edcd9785\"]"
   type        = list(string)
