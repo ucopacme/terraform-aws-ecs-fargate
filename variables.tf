@@ -74,12 +74,17 @@ variable "secrets" {
   }))
   default = []
 }
-variable "log_group_name" {
-  description = "The name of the provided CloudWatch Logs log group to use."
+variable "exec_log_group_name" {
+  description = "The name of the provided CloudWatch Logs log group to use for ECS Exec logs."
   default     = ""
   type        = string
 }
-variable "log_multiline_pattern" {
+variable "task_log_group_name" {
+  description = "The name of the provided CloudWatch Logs log group to use for ECS task logs."
+  default     = ""
+  type        = string
+}
+variable "task_log_multiline_pattern" {
   description = "Optional regular expression. Log messages will consist of a line that matches expression and any following lines that don't"
   default     = ""
   type        = string

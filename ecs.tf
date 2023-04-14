@@ -77,7 +77,7 @@ resource "aws_ecs_cluster" "this" {
 
       log_configuration {
         cloud_watch_encryption_enabled = false
-        cloud_watch_log_group_name     = var.log_group_name != "" ? var.log_group_name : aws_cloudwatch_log_group.exec.name
+        cloud_watch_log_group_name     = aws_cloudwatch_log_group.exec.name
       }
     }
   }
@@ -93,20 +93,20 @@ resource "aws_ecs_cluster" "this" {
 
 
 resource "aws_cloudwatch_log_group" "this" {
-  name              = join("-", [var.name, "ecs-task-lg"])
+  name              = var.task_log_group_name != "" ? var.task_log_group_name : join("-", [var.name, "ecs-task-lg"])
   retention_in_days = var.retention_in_days
   tags = var.tags
 }
 
 resource "aws_cloudwatch_log_group" "exec" {
-  name              = join("-", [var.name, "ecs-exec-lg"])
+  name              = var.exec_log_group_name != "" ? var.exec_log_group_name : join("-", [var.name, "ecs-exec-lg"])
   retention_in_days = var.retention_in_days
   tags = var.tags
 }
 
 
 locals {
-  log_multiline_pattern        = var.log_multiline_pattern != "" ? { "awslogs-multiline-pattern" = var.log_multiline_pattern } : null
+  task_log_multiline_pattern        = var.task_log_multiline_pattern != "" ? { "awslogs-multiline-pattern" = var.task_log_multiline_pattern } : null
   #task_container_secrets       = length(var.task_container_secrets) > 0 ? { "secrets" = var.task_container_secrets } : null
   #repository_credentials       = length(var.repository_credentials) > 0 ? { "repositoryCredentials" = { "credentialsParameter" = var.repository_credentials } } : null
   task_container_port_mappings = var.task_container_port == 0 ? var.task_container_port_mappings : concat(var.task_container_port_mappings, [{ containerPort = var.task_container_port, hostPort = var.task_container_port, protocol = "tcp" }])
@@ -114,10 +114,10 @@ locals {
   task_container_mount_points  = concat([for v in var.efs_volumes : { containerPath = v.mount_point, readOnly = v.readOnly, sourceVolume = v.name }], var.mount_points)
 
   log_configuration_options = merge({
-    "awslogs-group"         = var.log_group_name != "" ? var.log_group_name : aws_cloudwatch_log_group.this.name,
+    "awslogs-group"         = aws_cloudwatch_log_group.this.name
     "awslogs-region"        = "us-west-2"
     "awslogs-stream-prefix" = "container"
-  }, local.log_multiline_pattern)
+  }, local.task_log_multiline_pattern)
 
   container_definition = merge({
     "name"         = var.name
