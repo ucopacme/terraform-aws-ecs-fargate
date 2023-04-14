@@ -18,6 +18,11 @@ output "execution_role_arn" {
   value       = aws_iam_role.execution_role.arn
 }
 
+output "task_role_arn" {
+  description = "ARN of IAM role"
+  value       = aws_iam_role.task_role.arn
+}
+
 output "family" {
   description = "The family of your task definition, used as the definition name"
   value       = join("", aws_ecs_task_definition.this.*.family)
