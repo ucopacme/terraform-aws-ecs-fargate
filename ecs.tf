@@ -224,18 +224,6 @@ resource "aws_ecs_service" "this" {
   #depends_on = [var.http_tcp_listener_arns]
 }
 
-# Set up CloudWatch group and log stream and retain logs for 30 days
-resource "aws_cloudwatch_log_group" "cb_log_group" {
-  name              = join("-", [var.name, "ecs-cb"])
-  retention_in_days = var.retention_in_days
-
-  tags = var.tags
-}
-
-resource "aws_cloudwatch_log_stream" "cb_log_stream" {
-  name           = join("-", [var.name, "ecs-log-stream"])
-  log_group_name = aws_cloudwatch_log_group.cb_log_group.name
-}
 
 ## new autoscaling
 
