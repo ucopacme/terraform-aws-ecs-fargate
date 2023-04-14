@@ -20,7 +20,7 @@ output "execution_role_arn" {
 
 output "task_role_arn" {
   description = "ARN of IAM role"
-  value       = aws_iam_role.task_role.arn
+  value       = var.use_execution_role_for_task_role ? aws_iam_role.execution_role.arn : aws_iam_role.task_role[0].arn
 }
 
 output "family" {
