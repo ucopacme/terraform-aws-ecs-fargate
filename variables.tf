@@ -16,11 +16,36 @@ variable "container_cpu" {
   default     = null
   description = "How much CPU to give the container. 1024 is 1 CPU"
 }
+variable "use_execution_role_for_task_role" {
+  description = "Follow earlier module revision behavior of using a single role for both task execution role and task role (for backward compatibility)"
+  type        = bool
+  default     = false
+}
 
 variable "container_memory" {
   type        = number
   default     = null
   description = "How much memory in megabytes to give the container"
+}
+# Ideally this variable should be customized per-use with conditions to limit
+# access to necessary secrets.
+variable "task_execution_role_inline_policy" {
+  description = "Inline IAM policy to associate with the ECS task execution role"
+  default     = "{\"Version\": \"2012-10-17\", \"Statement\": {\"Effect\": \"Allow\", \"Action\": [\"secretsmanager:GetSecretValue\"], \"Resource\": \"*\"}}"
+  type        = string
+}
+# We include some ssmmessages actions by default to enable ECS Exec.
+variable "task_role_inline_policy" {
+  description = "Inline IAM policy to associate with the ECS task role"
+  default     = "{\"Version\": \"2012-10-17\", \"Statement\": {\"Effect\": \"Allow\", \"Action\": [\"ssmmessages:CreateControlChannel\", \"ssmmessages:CreateDataChannel\", \"ssmmessages:OpenControlChannel\", \"ssmmessages:OpenDataChannel\"], \"Resource\": \"*\"}}"
+  type        = string
+}
+# A bit klunky, but we define this combined inline policy to use as a default
+# when use_execution_role_for_task_role is true.
+variable "task_and_task_execution_role_inline_policy" {
+  description = "Inline IAM policy to associate with the ECS task execution role (used only when use_execution_role_for_task_role is true)"
+  default     = "{\"Version\": \"2012-10-17\", \"Statement\": {\"Effect\": \"Allow\", \"Action\": [\"secretsmanager:GetSecretValue\", \"ssmmessages:CreateControlChannel\", \"ssmmessages:CreateDataChannel\", \"ssmmessages:OpenControlChannel\", \"ssmmessages:OpenDataChannel\"], \"Resource\": \"*\"}}"
+  type        = string
 }
 variable "enable_ecs_cluster" {
   description = "Set to false to prevent the module from creating ecs cluster"
@@ -110,7 +135,6 @@ variable "retention_in_days" {
 variable "container_port" {
   description = "Port that the container exposes."
   type        = number
- 
 }
 
 variable "enable_execute_command" {

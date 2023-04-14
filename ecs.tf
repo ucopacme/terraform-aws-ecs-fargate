@@ -1,3 +1,9 @@
+data "aws_caller_identity" "current" {}
+
+data "aws_iam_policy" "AmazonECSTaskExecutionRolePolicy" {
+  arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
 data "aws_iam_policy_document" "assume_by_ecs" {
   statement {
     sid     = "AllowAssumeByEcsTasks"
@@ -11,30 +17,24 @@ data "aws_iam_policy_document" "assume_by_ecs" {
   }
 }
 
-data "aws_iam_policy_document" "execution_role" {
+data "aws_iam_policy_document" "assume_by_ecs_with_source_account" {
   statement {
-    sid    = "AllowECRLogging"
-    effect = "Allow"
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
 
-    actions = [
-      "ecr:GetAuthorizationToken",
-      "ecr:BatchCheckLayerAvailability",
-      "ecr:GetDownloadUrlForLayer",
-      "ecr:BatchGetImage",
-      "logs:CreateLogStream",
-      "logs:PutLogEvents",
-      "ecs:DescribeClusters",
-      "ssmmessages:CreateControlChannel",
-      "ssmmessages:CreateDataChannel",
-      "ssmmessages:OpenControlChannel",
-      "ssmmessages:OpenDataChannel",
-      "secretsmanager:GetSecretValue",
-      "secretsmanager:DescribeSecret",
-      "secretsmanager:List*",
-      "secretsmanager:GetResourcePolicy"
-    ]
+    principals {
+      type        = "Service"
+      identifiers = ["ecs-tasks.amazonaws.com"]
+    }
 
-    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceAccount"
+
+      values = [
+        "${data.aws_caller_identity.current.account_id}"
+      ]
+    }
   }
 }
 
@@ -43,11 +43,27 @@ resource "aws_iam_role" "execution_role" {
   assume_role_policy = data.aws_iam_policy_document.assume_by_ecs.json
 }
 
-resource "aws_iam_role_policy" "execution_role" {
-  role   = aws_iam_role.execution_role.name
-  policy = data.aws_iam_policy_document.execution_role.json
+resource "aws_iam_role_policy_attachment" "execution_role_managed_policy_attachment" {
+  role       = aws_iam_role.execution_role.name
+  policy_arn = data.aws_iam_policy.AmazonECSTaskExecutionRolePolicy.arn
 }
 
+resource "aws_iam_role_policy" "execution_role" {
+  role   = aws_iam_role.execution_role.name
+  policy = var.use_execution_role_for_task_role ? var.task_and_task_execution_role_inline_policy : var.task_execution_role_inline_policy
+}
+
+resource "aws_iam_role" "task_role" {
+  count              = var.use_execution_role_for_task_role ? 0 : 1
+  name               = "${var.name}_ecsTaskRole"
+  assume_role_policy = data.aws_iam_policy_document.assume_by_ecs_with_source_account.json
+}
+
+resource "aws_iam_role_policy" "task_role_policy" {
+  count  = var.use_execution_role_for_task_role ? 0 : 1
+  role   = aws_iam_role.task_role[0].name
+  policy = var.task_role_inline_policy
+}
 
 
 resource "aws_ecs_cluster" "this" {
@@ -116,7 +132,7 @@ locals {
     "secrets"      = var.secrets
     "MountPoints"  = local.task_container_mount_points
     "linuxParameters"   = var.linux_parameters
-    "readonlyRootFilesystem" = var.readonlyRootFilesystem 
+    "readonlyRootFilesystem" = var.readonlyRootFilesystem
     "logConfiguration" = {
       "logDriver" = "awslogs"
       "options"   = local.log_configuration_options
@@ -124,7 +140,7 @@ locals {
     "privileged" : var.privileged
   },)
 }
-    
+
 resource "aws_ecs_task_definition" "this" {
   family                   = join("-", [var.name, "task"]) # Naming our first task
   tags = var.tags
@@ -133,7 +149,7 @@ resource "aws_ecs_task_definition" "this" {
   memory                   = var.memory        # Specifying the memory our container requires
   cpu                      = var.cpu         # Specifying the CPU our container requires
   execution_role_arn       = aws_iam_role.execution_role.arn
-  task_role_arn            = aws_iam_role.execution_role.arn
+  task_role_arn            = var.use_execution_role_for_task_role ? aws_iam_role.execution_role.arn : aws_iam_role.task_role[0].arn
   dynamic "volume" {
     for_each = var.efs_volumes
     content {
@@ -176,7 +192,7 @@ resource "aws_ecs_service" "this" {
     target_group_arn = var.target_group_arn
     container_name   = var.name
     container_port   = var.container_port
-   
+
   }
 
   launch_type                        = "FARGATE"
@@ -188,12 +204,12 @@ resource "aws_ecs_service" "this" {
     type = "CODE_DEPLOY"
   }
   ### Deployment circuit breaker is not support with code_deploy controller
-  
+
   #deployment_circuit_breaker{
    # enable=true
     #rollback=true
   #}
-   
+
   network_configuration {
     subnets          = var.subnets
     assign_public_ip = var.assign_public_ip # Providing our containers with public IPs
@@ -203,7 +219,7 @@ resource "aws_ecs_service" "this" {
     ignore_changes = [task_definition,load_balancer,network_configuration]
     # create_before_destroy = true
   }
-  
+
 
   #depends_on = [var.http_tcp_listener_arns]
 }
