@@ -34,18 +34,15 @@ variable "task_execution_role_inline_policy" {
   default     = "{\"Version\": \"2012-10-17\", \"Statement\": {\"Effect\": \"Allow\", \"Action\": [\"secretsmanager:GetSecretValue\"], \"Resource\": \"*\"}}"
   type        = string
 }
-# We include some ssmmessages actions by default to enable ECS Exec.
 variable "task_role_inline_policy" {
   description = "Inline IAM policy to associate with the ECS task role"
-  default     = "{\"Version\": \"2012-10-17\", \"Statement\": {\"Effect\": \"Allow\", \"Action\": [\"ssmmessages:CreateControlChannel\", \"ssmmessages:CreateDataChannel\", \"ssmmessages:OpenControlChannel\", \"ssmmessages:OpenDataChannel\"], \"Resource\": \"*\"}}"
+  default     = ""
   type        = string
 }
-# A bit klunky, but we define this combined inline policy to use as a default
-# when use_execution_role_for_task_role is true.
-variable "task_and_task_execution_role_inline_policy" {
-  description = "Inline IAM policy to associate with the ECS task execution role (used only when use_execution_role_for_task_role is true)"
-  default     = "{\"Version\": \"2012-10-17\", \"Statement\": {\"Effect\": \"Allow\", \"Action\": [\"secretsmanager:GetSecretValue\", \"ssmmessages:CreateControlChannel\", \"ssmmessages:CreateDataChannel\", \"ssmmessages:OpenControlChannel\", \"ssmmessages:OpenDataChannel\"], \"Resource\": \"*\"}}"
-  type        = string
+variable "enable_ecs_exec_policy" {
+  description = "Include IAM actions needed for ECS Exec in task role inline policy"
+  type        = bool
+  default     = true
 }
 variable "enable_ecs_cluster" {
   description = "Set to false to prevent the module from creating ecs cluster"

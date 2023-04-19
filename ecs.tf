@@ -50,17 +50,17 @@ resource "aws_iam_role_policy_attachment" "execution_role_managed_policy_attachm
 
 resource "aws_iam_role_policy" "execution_role" {
   role   = aws_iam_role.execution_role.name
-  policy = var.use_execution_role_for_task_role ? var.task_and_task_execution_role_inline_policy : var.task_execution_role_inline_policy
+  policy = var.task_execution_role_inline_policy
 }
 
 resource "aws_iam_role" "task_role" {
-  count              = var.use_execution_role_for_task_role ? 0 : 1
+  count              = !var.use_execution_role_for_task_role ? 1 : 0
   name               = "${var.name}_ecsTaskRole"
   assume_role_policy = data.aws_iam_policy_document.assume_by_ecs_with_source_account.json
 }
 
 resource "aws_iam_role_policy" "task_role_policy" {
-  count  = var.use_execution_role_for_task_role ? 0 : 1
+  count  = !var.use_execution_role_for_task_role && var.task_role_inline_policy != "" ? 1 : 0
   role   = aws_iam_role.task_role[0].name
   policy = var.task_role_inline_policy
 }
@@ -91,7 +91,6 @@ resource "aws_ecs_cluster" "this" {
 }
 
 
-
 resource "aws_cloudwatch_log_group" "this" {
   name              = var.task_log_group_name != "" ? var.task_log_group_name : join("-", [var.name, "ecs-task-lg"])
   retention_in_days = var.retention_in_days
@@ -104,6 +103,36 @@ resource "aws_cloudwatch_log_group" "exec" {
   tags = var.tags
 }
 
+resource "aws_iam_role_policy" "ecs_exec_policy" {
+  count = var.enable_ecs_exec_policy ? 1 : 0
+  name = "EcsExecPolicy"
+  role = var.use_execution_role_for_task_role ? aws_iam_role.execution_role.name : aws_iam_role.task_role[0].name
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "ssmmessages:CreateControlChannel",
+          "ssmmessages:CreateDataChannel",
+          "ssmmessages:OpenControlChannel",
+          "ssmmessages:OpenDataChannel",
+          "logs:DescribeLogGroups",
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+      {
+        Action = [
+          "logs:CreateLogStream",
+          "logs:DescribeLogStreams",
+          "logs:PutLogEvents",
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:logs:region:${data.aws_caller_identity.current.account_id}:log-group:${aws_cloudwatch_log_group.exec.name}"
+      },
+    ]
+  })
+}
 
 locals {
   task_log_multiline_pattern        = var.task_log_multiline_pattern != "" ? { "awslogs-multiline-pattern" = var.task_log_multiline_pattern } : null
