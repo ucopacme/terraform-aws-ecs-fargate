@@ -68,25 +68,26 @@ resource "aws_iam_role_policy" "task_role_policy" {
 
 resource "aws_ecs_cluster" "this" {
   count = var.enable_ecs_cluster ? 1 : 0
-  name = join("-", [var.name, "cluster"])
-  tags = var.tags
+  name  = join("-", [var.name, "cluster"])
+  tags  = var.tags
   configuration {
-  execute_command_configuration {
+    execute_command_configuration {
       #kms_key_id = aws_kms_key.example.arn
-      logging    = "OVERRIDE"
+      logging    = var.enable_execute_command ? "OVERRIDE" : "NONE"
 
-      log_configuration {
-        cloud_watch_encryption_enabled = false
-        cloud_watch_log_group_name     = aws_cloudwatch_log_group.exec.name
+      dynamic "log_configuration" {
+        for_each = var.enable_execute_command ? [1] : []
+        content {
+          cloud_watch_encryption_enabled = false
+          cloud_watch_log_group_name     = aws_cloudwatch_log_group.exec[0].name
+        }
       }
     }
   }
-  dynamic "setting" {
-    for_each = var.containerInsights == true ? [1] : []
-    content {
-      name  = "containerInsights"
-      value = "enabled"
-    }
+
+  setting {
+    name  = "containerInsights"
+    value = var.containerInsights ? "enabled" : "disabled"
   }
 }
 
@@ -98,17 +99,18 @@ resource "aws_cloudwatch_log_group" "this" {
 }
 
 resource "aws_cloudwatch_log_group" "exec" {
+  count             = var.enable_execute_command ? 1 : 0
   name              = var.exec_log_group_name != "" ? var.exec_log_group_name : join("-", [var.name, "ecs-exec-lg"])
   retention_in_days = var.retention_in_days
   tags = var.tags
 }
 
 resource "aws_iam_role_policy" "ecs_exec_policy" {
-  count = var.enable_execute_command ? 1 : 0
-  name = "EcsExecPolicy"
-  role = var.use_execution_role_for_task_role ? aws_iam_role.execution_role.name : aws_iam_role.task_role[0].name
+  count  = var.enable_execute_command ? 1 : 0
+  name   = "EcsExecPolicy"
+  role   = var.use_execution_role_for_task_role ? aws_iam_role.execution_role.name : aws_iam_role.task_role[0].name
   policy = jsonencode({
-    Version = "2012-10-17"
+    Version   = "2012-10-17"
     Statement = [
       {
         Action = [
@@ -128,7 +130,7 @@ resource "aws_iam_role_policy" "ecs_exec_policy" {
           "logs:PutLogEvents",
         ]
         Effect   = "Allow"
-        Resource = "arn:aws:logs:region:${data.aws_caller_identity.current.account_id}:log-group:${aws_cloudwatch_log_group.exec.name}:*"
+        Resource = "arn:aws:logs:region:${data.aws_caller_identity.current.account_id}:log-group:${aws_cloudwatch_log_group.exec[0].name}:*"
       },
     ]
   })
