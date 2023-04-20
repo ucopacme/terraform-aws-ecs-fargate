@@ -231,6 +231,10 @@ resource "aws_ecs_service" "this" {
   deployment_maximum_percent         = var.deployment_maximum_percent
   deployment_minimum_healthy_percent = var.deployment_minimum_healthy_percent
 
+  lifecycle {
+    ignore_changes = [desired_count]
+  }
+
   deployment_controller {
     type = "CODE_DEPLOY"
   }
