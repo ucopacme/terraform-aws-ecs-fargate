@@ -231,10 +231,6 @@ resource "aws_ecs_service" "this" {
   deployment_maximum_percent         = var.deployment_maximum_percent
   deployment_minimum_healthy_percent = var.deployment_minimum_healthy_percent
 
-  lifecycle {
-    ignore_changes = [desired_count]
-  }
-
   deployment_controller {
     type = "CODE_DEPLOY"
   }
@@ -251,7 +247,7 @@ resource "aws_ecs_service" "this" {
     security_groups   = var.security_groups
   }
   lifecycle {
-    ignore_changes = [task_definition,load_balancer,network_configuration]
+    ignore_changes = [desired_count,task_definition,load_balancer,network_configuration]
     # create_before_destroy = true
   }
 
