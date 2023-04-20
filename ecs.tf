@@ -104,7 +104,7 @@ resource "aws_cloudwatch_log_group" "exec" {
 }
 
 resource "aws_iam_role_policy" "ecs_exec_policy" {
-  count = var.enable_ecs_exec_policy ? 1 : 0
+  count = var.enable_execute_command ? 1 : 0
   name = "EcsExecPolicy"
   role = var.use_execution_role_for_task_role ? aws_iam_role.execution_role.name : aws_iam_role.task_role[0].name
   policy = jsonencode({

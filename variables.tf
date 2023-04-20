@@ -39,11 +39,6 @@ variable "task_role_inline_policy" {
   default     = ""
   type        = string
 }
-variable "enable_ecs_exec_policy" {
-  description = "Include IAM actions needed for ECS Exec in task role inline policy"
-  type        = bool
-  default     = true
-}
 variable "enable_ecs_cluster" {
   description = "Set to false to prevent the module from creating ecs cluster"
   type        = bool
@@ -145,7 +140,7 @@ variable "container_port" {
 }
 
 variable "enable_execute_command" {
-  description = "(Optional) If true, autoscaling alarms will be created."
+  description = "Enable ECS Exec, and include IAM actions needed for ECS Exec in task role inline policy"
   type        = bool
   default     = false
 }
