@@ -219,8 +219,9 @@ variable "mount_points" {
 }
 
 variable "desired_count" {
-  description = ""
-  type        = string
+  description = "Number of instances of the task definition to place and keep running"
+  type        = number
+  default     = 0
 }
 
 variable "assign_public_ip" {
