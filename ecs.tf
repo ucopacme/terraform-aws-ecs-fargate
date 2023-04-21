@@ -243,8 +243,8 @@ resource "aws_ecs_service" "this" {
 
   network_configuration {
     subnets          = var.subnets
-    assign_public_ip = var.assign_public_ip # Providing our containers with public IPs
-    security_groups   = var.security_groups
+    assign_public_ip = var.assign_public_ip
+    security_groups  = var.security_groups
   }
   lifecycle {
     ignore_changes = [desired_count,task_definition,load_balancer,network_configuration]

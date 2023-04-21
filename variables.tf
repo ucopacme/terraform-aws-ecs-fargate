@@ -224,9 +224,9 @@ variable "desired_count" {
 }
 
 variable "assign_public_ip" {
-  description = ""
-  type   = string
-  default = "false"
+  description = "Assign a public IP address to the ENI"
+  type        = bool
+  default     = false
 }
 
 variable "deployment_maximum_percent" {
