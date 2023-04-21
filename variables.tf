@@ -59,7 +59,7 @@ variable "tags" {
 }
 
 variable "secrets" {
-  description = "List of port objects that the container exposes in addition to the task_container_port."
+  description = "Hash of name/SecretsManagerARN pairs to include in the task definition as environment variables (see also https://docs.aws.amazon.com/AmazonECS/latest/developerguide/secrets-envvar-secrets-manager.html)"
   type = list(object({
     name = string
     valueFrom = string
@@ -237,12 +237,6 @@ variable "deployment_maximum_percent" {
 variable "deployment_minimum_healthy_percent" {
   description = ""
   type        = string
-}
-
-variable "cluster" {
-  description = "The resource name."
-  type        = string
-  default     = null
 }
 
 variable "cluster_arn" {
