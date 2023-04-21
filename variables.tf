@@ -86,11 +86,6 @@ variable "awslogs_stream_prefix" {
   default     = "container"
   type        = string
 }
-variable "alb_sg" {
-  description = "The security groups to attach to the load balancer. e.g. [\"sg-edcd9784\",\"sg-edcd9785\"]"
-  type        = list(string)
-  default     = []
-}
 
 variable "image" {
   description = "Task def image name"
@@ -205,11 +200,6 @@ variable "task_container_port_mappings" {
   default = []
 }
 
-variable "task_container_protocol" {
-  description = "Protocol that the container exposes."
-  default     = "HTTP"
-  type        = string
-}
 variable "efs_volumes" {
   description = "Volumes definitions"
   default     = []
@@ -226,20 +216,6 @@ variable "mount_points" {
   description = "List of mount points"
   type        = list(any)
   default     = []
-}
-variable "efs_file_system_id" {
-  description = "Task def image name"
-  type        = string
-  default = ""
-}
-variable "volume_name" {
-type = string
-default = ""
-}
-
-variable "root_directory" {
-type = string
-default = ""
 }
 
 variable "desired_count" {
@@ -294,11 +270,6 @@ variable "cpu" {
   type        = string
 }
 
-variable "vpc_id" {
-  description = "VPC id where the load balancer and other resources will be deployed."
-  type        = string
-  default     = null
-}
 variable "subnets" {
   description = "A list of subnets to associate with the ecs . e.g. ['subnet-1a2b3c4d','subnet-1a2b3c4e','subnet-1a2b3c4f']"
   type        = list(string)
