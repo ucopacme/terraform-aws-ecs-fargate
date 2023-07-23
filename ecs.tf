@@ -54,14 +54,12 @@ resource "aws_iam_role_policy" "execution_role" {
 }
 
 resource "aws_iam_role" "task_role" {
-  count              = !var.use_execution_role_for_task_role ? 1 : 0
   name               = "${var.name}_ecsTaskRole"
   assume_role_policy = data.aws_iam_policy_document.assume_by_ecs_with_source_account.json
 }
 
 resource "aws_iam_role_policy" "task_role_policy" {
-  count  = !var.use_execution_role_for_task_role && var.task_role_inline_policy != "" ? 1 : 0
-  role   = aws_iam_role.task_role[0].name
+  role   = aws_iam_role.task_role.name
   policy = var.task_role_inline_policy
 }
 
@@ -108,7 +106,7 @@ resource "aws_cloudwatch_log_group" "exec" {
 resource "aws_iam_role_policy" "ecs_exec_policy" {
   count  = var.enable_execute_command ? 1 : 0
   name   = "EcsExecPolicy"
-  role   = var.use_execution_role_for_task_role ? aws_iam_role.execution_role.name : aws_iam_role.task_role[0].name
+  role   = aws_iam_role.task_role.name
   policy = jsonencode({
     Version   = "2012-10-17"
     Statement = [
@@ -180,7 +178,7 @@ resource "aws_ecs_task_definition" "this" {
   memory                   = var.memory        # Specifying the memory our container requires
   cpu                      = var.cpu         # Specifying the CPU our container requires
   execution_role_arn       = aws_iam_role.execution_role.arn
-  task_role_arn            = var.use_execution_role_for_task_role ? aws_iam_role.execution_role.arn : aws_iam_role.task_role[0].arn
+  task_role_arn            = aws_iam_role.task_role.arn
   dynamic "volume" {
     for_each = var.efs_volumes
     content {

@@ -16,11 +16,6 @@ variable "container_cpu" {
   default     = null
   description = "How much CPU to give the container. 1024 is 1 CPU"
 }
-variable "use_execution_role_for_task_role" {
-  description = "Follow earlier module revision behavior of using a single role for both task execution role and task role (for backward compatibility)"
-  type        = bool
-  default     = false
-}
 
 variable "container_memory" {
   type        = number
