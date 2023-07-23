@@ -59,6 +59,7 @@ resource "aws_iam_role" "task_role" {
 }
 
 resource "aws_iam_role_policy" "task_role_policy" {
+  count  = var.task_role_inline_policy != "" ? 1 : 0
   role   = aws_iam_role.task_role.name
   policy = var.task_role_inline_policy
 }
