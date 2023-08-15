@@ -31,7 +31,7 @@ variable "task_execution_role_inline_policy" {
 }
 variable "task_role_inline_policy" {
   description = "Inline IAM policy to associate with the ECS task role"
-  default     = ""
+  default     = "{\"Version\": \"2012-10-17\", \"Statement\": {\"Effect\": \"Allow\", \"Action\": [\"secretsmanager:GetSecretValue\"], \"Resource\": \"*\"}}"
   type        = string
 }
 variable "enable_ecs_cluster" {
