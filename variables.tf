@@ -22,16 +22,26 @@ variable "container_memory" {
   default     = null
   description = "How much memory in megabytes to give the container"
 }
-# Ideally this variable should be customized per-use with conditions to limit
-# access to necessary secrets.
 variable "task_execution_role_inline_policy" {
   description = "Inline IAM policy to associate with the ECS task execution role"
-  default     = "{\"Version\": \"2012-10-17\", \"Statement\": {\"Effect\": \"Allow\", \"Action\": [\"secretsmanager:GetSecretValue\"], \"Resource\": \"*\"}}"
+  default     = ""
   type        = string
 }
 variable "task_role_inline_policy" {
   description = "Inline IAM policy to associate with the ECS task role"
-  default     = "{\"Version\": \"2012-10-17\", \"Statement\": {\"Effect\": \"Allow\", \"Action\": [\"secretsmanager:GetSecretValue\"], \"Resource\": \"*\"}}"
+  default     = ""
+  type        = string
+}
+variable "task_secret_tag_key" {
+  description = "AWS tag key for Secrets Manager secrets the ECS task can read"
+  default     = "ucop:application"
+  type        = string
+}
+# Ideally this variable should be customized per-use with value to limit
+# access to necessary secrets.
+variable "task_secret_tag_value" {
+  description = "AWS tag value for Secrets Manager secrets the ECS task can read"
+  default     = ""
   type        = string
 }
 variable "enable_ecs_cluster" {

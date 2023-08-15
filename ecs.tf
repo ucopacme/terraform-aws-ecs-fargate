@@ -38,6 +38,45 @@ data "aws_iam_policy_document" "assume_by_ecs_with_source_account" {
   }
 }
 
+data "aws_iam_policy_document" "task_get_tagged_secret_values" {
+  statement {
+    effect    = "Allow"
+    actions   = ["secretsmanager:GetSecretValue"]
+    resources = ["*"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "secretsmanager:ResourceTag/${var.task_secret_tag_key}"
+
+      values = [
+        "${var.task_secret_tag_value}"
+      ]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "task_get_all_secret_values" {
+  statement {
+    effect    = "Allow"
+    actions   = ["secretsmanager:GetSecretValue"]
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "task_get_tagged_secret_values" {
+  count       = var.task_secret_tag_value != "" ? 1 : 0
+  name        = join("-", [var.name, "ecs", "task", "GetSecretValues"])
+  description = "Allow secrets retrieval for ${var.name} ECS tasks"
+  policy      = data.aws_iam_policy_document.task_get_tagged_secret_values.json
+}
+
+resource "aws_iam_policy" "task_get_all_secret_values" {
+  count       = var.task_secret_tag_value == "" ? 1 : 0
+  name        = join("-", [var.name, "ecs", "task", "GetSecretValues"])
+  description = "Allow secrets retrieval for ${var.name} ECS tasks"
+  policy      = data.aws_iam_policy_document.task_get_all_secret_values.json
+}
+
 resource "aws_iam_role" "execution_role" {
   name               = "${var.name}_ecsTaskExecutionRole"
   assume_role_policy = data.aws_iam_policy_document.assume_by_ecs.json
@@ -49,8 +88,21 @@ resource "aws_iam_role_policy_attachment" "execution_role_managed_policy_attachm
 }
 
 resource "aws_iam_role_policy" "execution_role" {
+  count  = var.task_execution_role_inline_policy != "" ? 1 : 0
   role   = aws_iam_role.execution_role.name
   policy = var.task_execution_role_inline_policy
+}
+
+resource "aws_iam_role_policy_attachment" "execution_role_get_tagged_secret_values" {
+  count      = var.task_secret_tag_value != "" ? 1 : 0
+  role       = aws_iam_role.execution_role.name
+  policy_arn = aws_iam_policy.task_get_tagged_secret_values[0].arn
+}
+
+resource "aws_iam_role_policy_attachment" "execution_role_get_all_secret_values" {
+  count      = var.task_secret_tag_value == "" ? 1 : 0
+  role       = aws_iam_role.execution_role.name
+  policy_arn = aws_iam_policy.task_get_all_secret_values[0].arn
 }
 
 resource "aws_iam_role" "task_role" {
@@ -64,6 +116,17 @@ resource "aws_iam_role_policy" "task_role_policy" {
   policy = var.task_role_inline_policy
 }
 
+resource "aws_iam_role_policy_attachment" "task_role_get_tagged_secret_values" {
+  count      = var.task_secret_tag_value != "" ? 1 : 0
+  role       = aws_iam_role.task_role.name
+  policy_arn = aws_iam_policy.task_get_tagged_secret_values[0].arn
+}
+
+resource "aws_iam_role_policy_attachment" "task_role_get_all_secret_values" {
+  count      = var.task_secret_tag_value == "" ? 1 : 0
+  role       = aws_iam_role.task_role.name
+  policy_arn = aws_iam_policy.task_get_all_secret_values[0].arn
+}
 
 resource "aws_ecs_cluster" "this" {
   count = var.enable_ecs_cluster ? 1 : 0
@@ -72,7 +135,7 @@ resource "aws_ecs_cluster" "this" {
   configuration {
     execute_command_configuration {
       #kms_key_id = aws_kms_key.example.arn
-      logging    = var.enable_execute_command ? "OVERRIDE" : "NONE"
+      logging = var.enable_execute_command ? "OVERRIDE" : "NONE"
 
       dynamic "log_configuration" {
         for_each = var.enable_execute_command ? [1] : []
@@ -94,22 +157,22 @@ resource "aws_ecs_cluster" "this" {
 resource "aws_cloudwatch_log_group" "this" {
   name              = var.task_log_group_name != "" ? var.task_log_group_name : join("-", [var.name, "ecs-task-lg"])
   retention_in_days = var.retention_in_days
-  tags = var.tags
+  tags              = var.tags
 }
 
 resource "aws_cloudwatch_log_group" "exec" {
   count             = var.enable_execute_command ? 1 : 0
   name              = var.exec_log_group_name != "" ? var.exec_log_group_name : join("-", [var.name, "ecs-exec-lg"])
   retention_in_days = var.retention_in_days
-  tags = var.tags
+  tags              = var.tags
 }
 
 resource "aws_iam_role_policy" "ecs_exec_policy" {
-  count  = var.enable_execute_command ? 1 : 0
-  name   = "EcsExecPolicy"
-  role   = aws_iam_role.task_role.name
+  count = var.enable_execute_command ? 1 : 0
+  name  = "EcsExecPolicy"
+  role  = aws_iam_role.task_role.name
   policy = jsonencode({
-    Version   = "2012-10-17"
+    Version = "2012-10-17"
     Statement = [
       {
         Action = [
@@ -136,12 +199,12 @@ resource "aws_iam_role_policy" "ecs_exec_policy" {
 }
 
 locals {
-  task_log_multiline_pattern        = var.task_log_multiline_pattern != "" ? { "awslogs-multiline-pattern" = var.task_log_multiline_pattern } : null
+  task_log_multiline_pattern = var.task_log_multiline_pattern != "" ? { "awslogs-multiline-pattern" = var.task_log_multiline_pattern } : null
   #task_container_secrets       = length(var.task_container_secrets) > 0 ? { "secrets" = var.task_container_secrets } : null
   #repository_credentials       = length(var.repository_credentials) > 0 ? { "repositoryCredentials" = { "credentialsParameter" = var.repository_credentials } } : null
   task_container_port_mappings = var.task_container_port == 0 ? var.task_container_port_mappings : concat(var.task_container_port_mappings, [{ containerPort = var.task_container_port, hostPort = var.task_container_port, protocol = "tcp" }])
- # task_container_environment   = [for k, v in var.task_container_environment : { name = k, value = v }]
-  task_container_mount_points  = concat([for v in var.efs_volumes : { containerPath = v.mount_point, readOnly = v.readOnly, sourceVolume = v.name }], var.mount_points)
+  # task_container_environment   = [for k, v in var.task_container_environment : { name = k, value = v }]
+  task_container_mount_points = concat([for v in var.efs_volumes : { containerPath = v.mount_point, readOnly = v.readOnly, sourceVolume = v.name }], var.mount_points)
 
   log_configuration_options = merge({
     "awslogs-group"         = aws_cloudwatch_log_group.this.name
@@ -150,34 +213,34 @@ locals {
   }, local.task_log_multiline_pattern)
 
   container_definition = merge({
-    "name"         = var.name
-    "image"        = var.image
-    "essential"    = true
-    "cpu"          = var.container_cpu
-    "memory"       = var.container_memory
-    "portMappings" = local.task_container_port_mappings
-    "stopTimeout"  = var.stop_timeout
-    "command"      = var.task_container_command
-    "environment"  = var.environment
-    "secrets"      = var.secrets
-    "MountPoints"  = local.task_container_mount_points
-    "linuxParameters"   = var.linux_parameters
+    "name"                   = var.name
+    "image"                  = var.image
+    "essential"              = true
+    "cpu"                    = var.container_cpu
+    "memory"                 = var.container_memory
+    "portMappings"           = local.task_container_port_mappings
+    "stopTimeout"            = var.stop_timeout
+    "command"                = var.task_container_command
+    "environment"            = var.environment
+    "secrets"                = var.secrets
+    "MountPoints"            = local.task_container_mount_points
+    "linuxParameters"        = var.linux_parameters
     "readonlyRootFilesystem" = var.readonlyRootFilesystem
     "logConfiguration" = {
       "logDriver" = "awslogs"
       "options"   = local.log_configuration_options
     }
     "privileged" : var.privileged
-  },)
+  }, )
 }
 
 resource "aws_ecs_task_definition" "this" {
   family                   = join("-", [var.name, "task"]) # Naming our first task
-  tags = var.tags
+  tags                     = var.tags
   requires_compatibilities = ["FARGATE"] # Stating that we are using ECS Fargate
   network_mode             = "awsvpc"    # Using awsvpc as our network mode as this is required for Fargate
-  memory                   = var.memory        # Specifying the memory our container requires
-  cpu                      = var.cpu         # Specifying the CPU our container requires
+  memory                   = var.memory  # Specifying the memory our container requires
+  cpu                      = var.cpu     # Specifying the CPU our container requires
   execution_role_arn       = aws_iam_role.execution_role.arn
   task_role_arn            = aws_iam_role.task_role.arn
   dynamic "volume" {
@@ -212,12 +275,12 @@ data "aws_ecs_task_definition" "this" {
   depends_on      = [aws_ecs_task_definition.this]
 }
 resource "aws_ecs_service" "this" {
-  name = join("-", [var.name, "service"])
-  task_definition = "${aws_ecs_task_definition.this.family}:${max(aws_ecs_task_definition.this.revision, data.aws_ecs_task_definition.this.revision)}"
-  cluster         = var.cluster_arn
+  name                   = join("-", [var.name, "service"])
+  task_definition        = "${aws_ecs_task_definition.this.family}:${max(aws_ecs_task_definition.this.revision, data.aws_ecs_task_definition.this.revision)}"
+  cluster                = var.cluster_arn
   enable_execute_command = var.enable_execute_command
-  tags = var.tags
-  propagate_tags = "TASK_DEFINITION"
+  tags                   = var.tags
+  propagate_tags         = "TASK_DEFINITION"
   load_balancer {
     target_group_arn = var.target_group_arn
     container_name   = var.name
@@ -236,8 +299,8 @@ resource "aws_ecs_service" "this" {
   ### Deployment circuit breaker is not support with code_deploy controller
 
   #deployment_circuit_breaker{
-   # enable=true
-    #rollback=true
+  # enable=true
+  #rollback=true
   #}
 
   network_configuration {
@@ -246,7 +309,7 @@ resource "aws_ecs_service" "this" {
     security_groups  = var.security_groups
   }
   lifecycle {
-    ignore_changes = [desired_count,task_definition,load_balancer,network_configuration]
+    ignore_changes = [desired_count, task_definition, load_balancer, network_configuration]
     # create_before_destroy = true
   }
 
@@ -260,7 +323,7 @@ resource "aws_ecs_service" "this" {
 module "ecs-autoscaling" {
   count = var.enable_autoscaling ? 1 : 0
 
-  source  = "git::https://git@github.com/ucopacme/terraform-aws-ecs-fargate-auto-scaling"
+  source = "git::https://git@github.com/ucopacme/terraform-aws-ecs-fargate-auto-scaling"
   #version = "1.0.6"
 
   name                      = var.name
