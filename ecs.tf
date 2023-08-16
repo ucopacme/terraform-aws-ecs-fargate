@@ -63,18 +63,10 @@ data "aws_iam_policy_document" "task_get_all_secret_values" {
   }
 }
 
-resource "aws_iam_policy" "task_get_tagged_secret_values" {
-  count       = var.task_secret_tag_value != "" ? 1 : 0
+resource "aws_iam_policy" "task_get_secret_values" {
   name        = join("-", [var.name, "ecs", "task", "GetSecretValues"])
   description = "Allow secrets retrieval for ${var.name} ECS tasks"
-  policy      = data.aws_iam_policy_document.task_get_tagged_secret_values.json
-}
-
-resource "aws_iam_policy" "task_get_all_secret_values" {
-  count       = var.task_secret_tag_value == "" ? 1 : 0
-  name        = join("-", [var.name, "ecs", "task", "GetSecretValues"])
-  description = "Allow secrets retrieval for ${var.name} ECS tasks"
-  policy      = data.aws_iam_policy_document.task_get_all_secret_values.json
+  policy      = var.task_secret_tag_value == "" ? data.aws_iam_policy_document.task_get_all_secret_values.json : data.aws_iam_policy_document.task_get_tagged_secret_values.json
 }
 
 resource "aws_iam_role" "execution_role" {
@@ -93,16 +85,9 @@ resource "aws_iam_role_policy" "execution_role" {
   policy = var.task_execution_role_inline_policy
 }
 
-resource "aws_iam_role_policy_attachment" "execution_role_get_tagged_secret_values" {
-  count      = var.task_secret_tag_value != "" ? 1 : 0
+resource "aws_iam_role_policy_attachment" "execution_role_get_secret_values" {
   role       = aws_iam_role.execution_role.name
-  policy_arn = aws_iam_policy.task_get_tagged_secret_values[0].arn
-}
-
-resource "aws_iam_role_policy_attachment" "execution_role_get_all_secret_values" {
-  count      = var.task_secret_tag_value == "" ? 1 : 0
-  role       = aws_iam_role.execution_role.name
-  policy_arn = aws_iam_policy.task_get_all_secret_values[0].arn
+  policy_arn = aws_iam_policy.task_get_secret_values.arn
 }
 
 resource "aws_iam_role" "task_role" {
@@ -116,16 +101,9 @@ resource "aws_iam_role_policy" "task_role_policy" {
   policy = var.task_role_inline_policy
 }
 
-resource "aws_iam_role_policy_attachment" "task_role_get_tagged_secret_values" {
-  count      = var.task_secret_tag_value != "" ? 1 : 0
+resource "aws_iam_role_policy_attachment" "task_role_get_secret_values" {
   role       = aws_iam_role.task_role.name
-  policy_arn = aws_iam_policy.task_get_tagged_secret_values[0].arn
-}
-
-resource "aws_iam_role_policy_attachment" "task_role_get_all_secret_values" {
-  count      = var.task_secret_tag_value == "" ? 1 : 0
-  role       = aws_iam_role.task_role.name
-  policy_arn = aws_iam_policy.task_get_all_secret_values[0].arn
+  policy_arn = aws_iam_policy.task_get_secret_values.arn
 }
 
 resource "aws_ecs_cluster" "this" {
