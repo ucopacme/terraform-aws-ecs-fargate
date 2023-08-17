@@ -170,7 +170,7 @@ resource "aws_iam_role_policy" "ecs_exec_policy" {
           "logs:PutLogEvents",
         ]
         Effect   = "Allow"
-        Resource = "arn:aws:logs:region:${data.aws_caller_identity.current.account_id}:log-group:${aws_cloudwatch_log_group.exec[0].name}:*"
+        Resource = "arn:aws:logs:*:${data.aws_caller_identity.current.account_id}:log-group:${aws_cloudwatch_log_group.exec[0].name}:*"
       },
     ]
   })
