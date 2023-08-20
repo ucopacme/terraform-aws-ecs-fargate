@@ -245,6 +245,12 @@ variable "deployment_minimum_healthy_percent" {
   type        = string
 }
 
+variable "health_check_grace_period_seconds" {
+  description = ""
+  type        = number
+  default     = 0
+}
+
 variable "cluster_arn" {
   description = "name, to be used as prefix for all resource names"
   type        = string

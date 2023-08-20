@@ -270,6 +270,7 @@ resource "aws_ecs_service" "this" {
   desired_count                      = var.desired_count
   deployment_maximum_percent         = var.deployment_maximum_percent
   deployment_minimum_healthy_percent = var.deployment_minimum_healthy_percent
+  health_check_grace_period_seconds  = var.health_check_grace_period_seconds
 
   deployment_controller {
     type = "CODE_DEPLOY"
