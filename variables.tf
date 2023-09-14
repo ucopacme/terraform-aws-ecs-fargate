@@ -134,6 +134,12 @@ variable "retention_in_days" {
   default     = 30
   type        = number
 }
+variable "container_name" {
+  description = "Name of the container to associate with the load balancer"
+  default     = ""
+  type        = string
+}
+
 variable "container_port" {
   description = "Port that the container exposes."
   type        = number

@@ -261,9 +261,8 @@ resource "aws_ecs_service" "this" {
   propagate_tags         = "TASK_DEFINITION"
   load_balancer {
     target_group_arn = var.target_group_arn
-    container_name   = var.name
+    container_name   = var.container_name != "" ? var.container_name : var.name
     container_port   = var.container_port
-
   }
 
   launch_type                        = "FARGATE"
