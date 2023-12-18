@@ -71,6 +71,15 @@ variable "secrets" {
   }))
   default = []
 }
+
+variable "systemControls" {
+  description = "Hash of name/SecretsManagerARN pairs to include in the task definition as environment variables (see also https://docs.aws.amazon.com/AmazonECS/latest/developerguide/secrets-envvar-secrets-manager.html)"
+  type = list(object({
+    name = string
+    value = string
+  }))
+  default = []
+}
 variable "exec_log_group_name" {
   description = "The name of the provided CloudWatch Logs log group to use for ECS Exec logs."
   default     = ""
