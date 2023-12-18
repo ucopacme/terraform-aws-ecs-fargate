@@ -75,7 +75,7 @@ variable "secrets" {
 variable "systemControls" {
   description = "Hash of name/SecretsManagerARN pairs to include in the task definition as environment variables (see also https://docs.aws.amazon.com/AmazonECS/latest/developerguide/secrets-envvar-secrets-manager.html)"
   type = list(object({
-    name = string
+    namespace = string
     value = string
   }))
   default = []
