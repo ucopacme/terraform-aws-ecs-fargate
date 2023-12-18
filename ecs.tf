@@ -201,6 +201,7 @@ locals {
     "command"                = var.task_container_command
     "environment"            = var.environment
     "secrets"                = var.secrets
+    "systemControls"         = var.systemControls
     "MountPoints"            = local.task_container_mount_points
     "linuxParameters"        = var.linux_parameters
     "readonlyRootFilesystem" = var.readonlyRootFilesystem
