@@ -52,8 +52,8 @@ variable "enable_ecs_cluster" {
 variable "environment" {
   description = "List of port objects that the container exposes in addition to the task_container_port."
   type = list(object({
-    name = string
-    value      = string
+    name  = string
+    value = string
   }))
   default = []
 }
@@ -66,7 +66,7 @@ variable "tags" {
 variable "secrets" {
   description = "Hash of name/SecretsManagerARN pairs to include in the task definition as environment variables (see also https://docs.aws.amazon.com/AmazonECS/latest/developerguide/secrets-envvar-secrets-manager.html)"
   type = list(object({
-    name = string
+    name      = string
     valueFrom = string
   }))
   default = []
@@ -76,7 +76,7 @@ variable "systemControls" {
   description = "Hash of name/SecretsManagerARN pairs to include in the task definition as environment variables (see also https://docs.aws.amazon.com/AmazonECS/latest/developerguide/secrets-envvar-secrets-manager.html)"
   type = list(object({
     namespace = string
-    value = string
+    value     = string
   }))
   default = []
 }
@@ -302,11 +302,20 @@ variable "target_group_arn" {
   type        = string
 }
 
-
 variable "linux_parameters" {
   type = object({
     initProcessEnabled = bool
   })
   description = "Linux-specific modifications that are applied to the container, such as Linux kernel capabilities. For more details, see https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_LinuxParameters.html"
   default     = null
+}
+
+variable "managed_ec2_instances" {
+  description = "List of managed EC2 instance configurations for ECS capacity providers. cpu_max (e.g. '2') and mem_max (e.g. '4096') define the maximum vCPU and memory for instance requirements."
+  type = map(object({
+    cpu_max    = string
+    mem_max    = string
+    storage_gb = string
+  }))
+  default = {}
 }
