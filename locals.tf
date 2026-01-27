@@ -8,6 +8,7 @@ locals {
 
   # Generate an empty list if enable_ecs_cluster is false, otherwise set value to var.managed_ec2_instances
   managed_ec2_instances = var.enable_ecs_cluster ? var.managed_ec2_instances : {}
+  asg_ec2_instances    = var.enable_ecs_cluster ? var.asg_ec2_instances : {}
 
   log_configuration_options = merge({
     "awslogs-group"         = aws_cloudwatch_log_group.this.name

@@ -319,3 +319,14 @@ variable "managed_ec2_instances" {
   }))
   default = {}
 }
+
+variable "asg_ec2_instances" {
+  description = "List of ASG EC2 instance configurations for ECS capacity providers. instance_type (e.g. 'm7a.medium'), min_capacity, max_capacity, desired_capacity define the ASG properties."
+  type = map(object({
+    instance_type    = string
+    min_capacity     = number
+    max_capacity     = number
+    desired_capacity = number
+  }))
+  default = {}
+}
