@@ -310,7 +310,7 @@ variable "linux_parameters" {
   default     = null
 }
 
-variable "managed_ec2_instances" {
+variable "managed_ec2_providers" {
   description = "List of managed EC2 instance configurations for ECS capacity providers. cpu_max (e.g. '2') and mem_max (e.g. '4096') define the maximum vCPU and memory for instance requirements."
   type = map(object({
     cpu_max    = string
@@ -320,7 +320,7 @@ variable "managed_ec2_instances" {
   default = {}
 }
 
-variable "asg_ec2_instances" {
+variable "asg_ec2_providers" {
   description = "List of ASG EC2 instance configurations for ECS capacity providers. instance_type (e.g. 'm7a.medium'), min_capacity, max_capacity, desired_capacity define the ASG properties."
   type = map(object({
     instance_type    = string

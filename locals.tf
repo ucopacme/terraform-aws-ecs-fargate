@@ -6,9 +6,11 @@ locals {
   # task_container_environment   = [for k, v in var.task_container_environment : { name = k, value = v }]
   task_container_mount_points = concat([for v in var.efs_volumes : { containerPath = v.mount_point, readOnly = v.readOnly, sourceVolume = v.name }], var.mount_points)
 
-  # Generate an empty list if enable_ecs_cluster is false, otherwise set value to var.managed_ec2_instances
-  managed_ec2_instances = var.enable_ecs_cluster ? var.managed_ec2_instances : {}
-  asg_ec2_instances    = var.enable_ecs_cluster ? var.asg_ec2_instances : {}
+  derived_ecs_hash = var.enable_ecs_cluster ? substr(sha256(aws_ecs_cluster.this[0].name), 0, 8) : ""
+
+  # Generate an empty list if enable_ecs_cluster is false, otherwise set value to var.managed_ec2_providers
+  managed_ec2_providers = var.enable_ecs_cluster ? var.managed_ec2_providers : {}
+  asg_ec2_providers    = var.enable_ecs_cluster ? var.asg_ec2_providers : {}
 
   log_configuration_options = merge({
     "awslogs-group"         = aws_cloudwatch_log_group.this.name
