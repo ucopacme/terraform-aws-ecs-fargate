@@ -37,8 +37,6 @@ variable "task_secret_tag_key" {
   default     = "ucop:application"
   type        = string
 }
-# Ideally this variable should be customized per-use with value to limit
-# access to necessary secrets.
 variable "task_secret_tag_value" {
   description = "AWS tag value for Secrets Manager secrets the ECS task can read"
   default     = ""
@@ -52,8 +50,8 @@ variable "enable_ecs_cluster" {
 variable "environment" {
   description = "List of port objects that the container exposes in addition to the task_container_port."
   type = list(object({
-    name = string
-    value      = string
+    name  = string
+    value = string
   }))
   default = []
 }
@@ -64,19 +62,19 @@ variable "tags" {
 }
 
 variable "secrets" {
-  description = "Hash of name/SecretsManagerARN pairs to include in the task definition as environment variables (see also https://docs.aws.amazon.com/AmazonECS/latest/developerguide/secrets-envvar-secrets-manager.html)"
+  description = "Hash of name/SecretsManagerARN pairs to include in the task definition as environment variables"
   type = list(object({
-    name = string
+    name      = string
     valueFrom = string
   }))
   default = []
 }
 
 variable "systemControls" {
-  description = "Hash of name/SecretsManagerARN pairs to include in the task definition as environment variables (see also https://docs.aws.amazon.com/AmazonECS/latest/developerguide/secrets-envvar-secrets-manager.html)"
+  description = "System controls to include in the task definition"
   type = list(object({
     namespace = string
-    value = string
+    value     = string
   }))
   default = []
 }
@@ -261,7 +259,7 @@ variable "deployment_minimum_healthy_percent" {
 }
 
 variable "health_check_grace_period_seconds" {
-  description = ""
+  description = "Seconds to ignore failing load balancer health checks on newly instantiated tasks. Only applies when blue_green = true."
   type        = number
   default     = 0
 }
@@ -281,7 +279,6 @@ variable "security_groups" {
   default     = []
 }
 
-
 variable "memory" {
   description = "task df memory"
   type        = string
@@ -296,17 +293,31 @@ variable "subnets" {
   type        = list(string)
 }
 
-
+# Changed from required to optional — only needed when blue_green = true
 variable "target_group_arn" {
-  description = "target group arn"
+  description = "ALB target group ARN. Required when blue_green = true, leave empty for standard rolling deployment."
   type        = string
+  default     = ""
 }
-
 
 variable "linux_parameters" {
   type = object({
     initProcessEnabled = bool
   })
-  description = "Linux-specific modifications that are applied to the container, such as Linux kernel capabilities. For more details, see https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_LinuxParameters.html"
+  description = "Linux-specific modifications that are applied to the container, such as Linux kernel capabilities."
   default     = null
+}
+
+# --- Blue/Green toggle ---
+
+variable "blue_green" {
+  description = "Whether to use blue/green deployment with CODE_DEPLOY controller and ALB. Set to false for standard rolling deployment without ALB."
+  type        = bool
+  default     = true
+}
+
+variable "enable_deployment_circuit_breaker" {
+  description = "Enable deployment circuit breaker with automatic rollback. Only applies when blue_green = false (ECS rolling deployment)."
+  type        = bool
+  default     = true
 }

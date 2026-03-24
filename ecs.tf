@@ -110,9 +110,9 @@ resource "aws_ecs_cluster" "this" {
   count = var.enable_ecs_cluster ? 1 : 0
   name  = join("-", [var.name, "cluster"])
   tags  = var.tags
+
   configuration {
     execute_command_configuration {
-      #kms_key_id = aws_kms_key.example.arn
       logging = var.enable_execute_command ? "OVERRIDE" : "NONE"
 
       dynamic "log_configuration" {
@@ -130,7 +130,6 @@ resource "aws_ecs_cluster" "this" {
     value = var.containerInsights ? "enabled" : "disabled"
   }
 }
-
 
 resource "aws_cloudwatch_log_group" "this" {
   name              = var.task_log_group_name != "" ? var.task_log_group_name : join("-", [var.name, "ecs-task-lg"])
@@ -177,12 +176,9 @@ resource "aws_iam_role_policy" "ecs_exec_policy" {
 }
 
 locals {
-  task_log_multiline_pattern = var.task_log_multiline_pattern != "" ? { "awslogs-multiline-pattern" = var.task_log_multiline_pattern } : null
-  #task_container_secrets       = length(var.task_container_secrets) > 0 ? { "secrets" = var.task_container_secrets } : null
-  #repository_credentials       = length(var.repository_credentials) > 0 ? { "repositoryCredentials" = { "credentialsParameter" = var.repository_credentials } } : null
+  task_log_multiline_pattern   = var.task_log_multiline_pattern != "" ? { "awslogs-multiline-pattern" = var.task_log_multiline_pattern } : null
   task_container_port_mappings = var.task_container_port == 0 ? var.task_container_port_mappings : concat(var.task_container_port_mappings, [{ containerPort = var.task_container_port, hostPort = var.task_container_port, protocol = "tcp" }])
-  # task_container_environment   = [for k, v in var.task_container_environment : { name = k, value = v }]
-  task_container_mount_points = concat([for v in var.efs_volumes : { containerPath = v.mount_point, readOnly = v.readOnly, sourceVolume = v.name }], var.mount_points)
+  task_container_mount_points  = concat([for v in var.efs_volumes : { containerPath = v.mount_point, readOnly = v.readOnly, sourceVolume = v.name }], var.mount_points)
 
   log_configuration_options = merge({
     "awslogs-group"         = aws_cloudwatch_log_group.this.name
@@ -210,18 +206,19 @@ locals {
       "options"   = local.log_configuration_options
     }
     "privileged" : var.privileged
-  }, )
+  })
 }
 
 resource "aws_ecs_task_definition" "this" {
-  family                   = join("-", [var.name, "task"]) # Naming our first task
+  family                   = join("-", [var.name, "task"])
   tags                     = var.tags
-  requires_compatibilities = ["FARGATE"] # Stating that we are using ECS Fargate
-  network_mode             = "awsvpc"    # Using awsvpc as our network mode as this is required for Fargate
-  memory                   = var.memory  # Specifying the memory our container requires
-  cpu                      = var.cpu     # Specifying the CPU our container requires
+  requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc"
+  memory                   = var.memory
+  cpu                      = var.cpu
   execution_role_arn       = aws_iam_role.execution_role.arn
   task_role_arn            = aws_iam_role.task_role.arn
+
   dynamic "volume" {
     for_each = var.efs_volumes
     content {
@@ -237,22 +234,22 @@ resource "aws_ecs_task_definition" "this" {
       }
     }
   }
+
   dynamic "volume" {
     for_each = var.volumes
     content {
       name = volume.value["name"]
     }
   }
+
   container_definitions = jsonencode(concat([local.container_definition], var.sidecar_containers))
 }
-
-
-### ECS Services
 
 data "aws_ecs_task_definition" "this" {
   task_definition = aws_ecs_task_definition.this.family
   depends_on      = [aws_ecs_task_definition.this]
 }
+
 resource "aws_ecs_service" "this" {
   name                   = join("-", [var.name, "service"])
   task_definition        = "${aws_ecs_task_definition.this.family}:${max(aws_ecs_task_definition.this.revision, data.aws_ecs_task_definition.this.revision)}"
@@ -260,50 +257,53 @@ resource "aws_ecs_service" "this" {
   enable_execute_command = var.enable_execute_command
   tags                   = var.tags
   propagate_tags         = "TASK_DEFINITION"
-  load_balancer {
-    target_group_arn = var.target_group_arn
-    container_name   = var.container_name != "" ? var.container_name : var.name
-    container_port   = var.container_port
+
+  # Load balancer block only created when blue_green = true
+  dynamic "load_balancer" {
+    for_each = var.blue_green ? [1] : []
+    content {
+      target_group_arn = var.target_group_arn
+      container_name   = var.container_name != "" ? var.container_name : var.name
+      container_port   = var.container_port
+    }
   }
 
   launch_type                        = "FARGATE"
   desired_count                      = var.desired_count
   deployment_maximum_percent         = var.deployment_maximum_percent
   deployment_minimum_healthy_percent = var.deployment_minimum_healthy_percent
-  health_check_grace_period_seconds  = var.health_check_grace_period_seconds
+  health_check_grace_period_seconds  = var.blue_green ? var.health_check_grace_period_seconds : null
 
+  # Deployment controller — CODE_DEPLOY for blue/green, ECS for standard rolling
   deployment_controller {
-    type = "CODE_DEPLOY"
+    type = var.blue_green ? "CODE_DEPLOY" : "ECS"
   }
-  ### Deployment circuit breaker is not support with code_deploy controller
 
-  #deployment_circuit_breaker{
-  # enable=true
-  #rollback=true
-  #}
+  # Circuit breaker only supported with ECS (rolling) controller, not CODE_DEPLOY
+  dynamic "deployment_circuit_breaker" {
+    for_each = var.blue_green ? [] : (var.enable_deployment_circuit_breaker ? [1] : [])
+    content {
+      enable   = true
+      rollback = true
+    }
+  }
 
   network_configuration {
     subnets          = var.subnets
     assign_public_ip = var.assign_public_ip
     security_groups  = var.security_groups
   }
+
   lifecycle {
     ignore_changes = [desired_count, task_definition, load_balancer, network_configuration]
-    # create_before_destroy = true
   }
-
-
-  #depends_on = [var.http_tcp_listener_arns]
 }
 
-
-## new autoscaling
-
+## Autoscaling
 module "ecs-autoscaling" {
   count = var.enable_autoscaling ? 1 : 0
 
   source = "git::https://git@github.com/ucopacme/terraform-aws-ecs-fargate-auto-scaling"
-  #version = "1.0.6"
 
   name                      = var.name
   ecs_cluster_name          = var.cluster_name
