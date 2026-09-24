@@ -176,9 +176,19 @@ resource "aws_iam_role_policy" "ecs_exec_policy" {
 }
 
 locals {
-  task_log_multiline_pattern   = var.task_log_multiline_pattern != "" ? { "awslogs-multiline-pattern" = var.task_log_multiline_pattern } : null
-  task_container_port_mappings = var.task_container_port == 0 ? var.task_container_port_mappings : concat(var.task_container_port_mappings, [{ containerPort = var.task_container_port, hostPort = var.task_container_port, protocol = "tcp" }])
-  task_container_mount_points  = concat([for v in var.efs_volumes : { containerPath = v.mount_point, readOnly = v.readOnly, sourceVolume = v.name }], var.mount_points)
+  task_log_multiline_pattern = var.task_log_multiline_pattern != "" ? { "awslogs-multiline-pattern" = var.task_log_multiline_pattern } : null
+  base_port_mappings         = var.task_container_port == 0 ? var.task_container_port_mappings : concat(var.task_container_port_mappings, [{ containerPort = var.task_container_port, hostPort = var.task_container_port, protocol = "tcp" }])
+
+  # Service Connect requires the target container port mapping to be NAMED so that
+  # service_connect_configuration.port_name can reference it. When enabled, add the
+  # "name" attribute to the existing mapping whose containerPort == service_connect_container_port
+  # (no new/duplicate port is added). Backward compatible: unchanged when disabled.
+  task_container_port_mappings = var.service_connect_enabled && var.service_connect_port_name != "" ? [
+    for m in local.base_port_mappings :
+    m.containerPort == var.service_connect_container_port ? merge(m, { name = var.service_connect_port_name }) : m
+  ] : local.base_port_mappings
+
+  task_container_mount_points = concat([for v in var.efs_volumes : { containerPath = v.mount_point, readOnly = v.readOnly, sourceVolume = v.name }], var.mount_points)
 
   log_configuration_options = merge({
     "awslogs-group"         = aws_cloudwatch_log_group.this.name
@@ -292,6 +302,31 @@ resource "aws_ecs_service" "this" {
     subnets          = var.subnets
     assign_public_ip = var.assign_public_ip
     security_groups  = var.security_groups
+  }
+
+  # ECS Service Connect (opt-in). When enabled, registers this service in the given
+  # namespace and optionally advertises a discoverable endpoint other services can call
+  # by name. Backward compatible: disabled by default (no block emitted).
+  dynamic "service_connect_configuration" {
+    for_each = var.service_connect_enabled ? [1] : []
+    content {
+      enabled   = true
+      namespace = var.service_connect_namespace
+
+      # Advertise this service under a discovery name (client-callable). Omit the
+      # 'service' block for client-only services that just need to call others.
+      dynamic "service" {
+        for_each = var.service_connect_service_name != "" ? [1] : []
+        content {
+          port_name      = var.service_connect_port_name
+          discovery_name = var.service_connect_service_name
+          client_alias {
+            port     = var.service_connect_client_alias_port
+            dns_name = var.service_connect_service_name
+          }
+        }
+      }
+    }
   }
 
   lifecycle {
