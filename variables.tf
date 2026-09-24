@@ -322,40 +322,10 @@ variable "enable_deployment_circuit_breaker" {
   default     = true
 }
 
-# --- ECS Service Connect (opt-in) ---
+# --- Cloud Map service discovery (opt-in) ---
 
-variable "service_connect_enabled" {
-  description = "Enable ECS Service Connect for this service. Backward compatible: disabled by default."
-  type        = bool
-  default     = false
-}
-
-variable "service_connect_namespace" {
-  description = "Cloud Map namespace ARN or name for Service Connect. Required when service_connect_enabled = true."
+variable "service_discovery_arn" {
+  description = "ARN of an aws_service_discovery_service to register this ECS service with (Cloud Map). Compatible with CODE_DEPLOY blue/green. Empty = no service discovery."
   type        = string
   default     = ""
-}
-
-variable "service_connect_service_name" {
-  description = "Discovery/DNS name to advertise this service under (client-callable, e.g. 'opencred'). Leave empty for a client-only service that only calls others."
-  type        = string
-  default     = ""
-}
-
-variable "service_connect_port_name" {
-  description = "Name given to the container port mapping that Service Connect advertises. Required when advertising a service (service_connect_service_name set)."
-  type        = string
-  default     = ""
-}
-
-variable "service_connect_container_port" {
-  description = "Container port that Service Connect advertises (must match an existing container port mapping)."
-  type        = number
-  default     = 0
-}
-
-variable "service_connect_client_alias_port" {
-  description = "Port other services use to reach this service by its Service Connect dns_name."
-  type        = number
-  default     = 0
 }

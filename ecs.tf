@@ -176,28 +176,9 @@ resource "aws_iam_role_policy" "ecs_exec_policy" {
 }
 
 locals {
-  task_log_multiline_pattern = var.task_log_multiline_pattern != "" ? { "awslogs-multiline-pattern" = var.task_log_multiline_pattern } : null
-  base_port_mappings         = var.task_container_port == 0 ? var.task_container_port_mappings : concat(var.task_container_port_mappings, [{ containerPort = var.task_container_port, hostPort = var.task_container_port, protocol = "tcp" }])
-
-  # Whether to name the Service Connect target port mapping.
-  sc_name_ports = var.service_connect_enabled && var.service_connect_port_name != ""
-
-  # Rebuild each port mapping with explicit numeric ports so JSON encoding keeps ints
-  # (avoids type coercion from merging a string "name" into number fields). When Service
-  # Connect is enabled, the mapping matching service_connect_container_port also gets a
-  # "name" so service_connect_configuration.port_name can reference it.
-  task_container_port_mappings = [
-    for m in local.base_port_mappings : merge(
-      {
-        containerPort = tonumber(m.containerPort)
-        hostPort      = tonumber(m.hostPort)
-        protocol      = m.protocol
-      },
-      (local.sc_name_ports && tonumber(m.containerPort) == var.service_connect_container_port) ? { name = var.service_connect_port_name } : {}
-    )
-  ]
-
-  task_container_mount_points = concat([for v in var.efs_volumes : { containerPath = v.mount_point, readOnly = v.readOnly, sourceVolume = v.name }], var.mount_points)
+  task_log_multiline_pattern   = var.task_log_multiline_pattern != "" ? { "awslogs-multiline-pattern" = var.task_log_multiline_pattern } : null
+  task_container_port_mappings = var.task_container_port == 0 ? var.task_container_port_mappings : concat(var.task_container_port_mappings, [{ containerPort = var.task_container_port, hostPort = var.task_container_port, protocol = "tcp" }])
+  task_container_mount_points  = concat([for v in var.efs_volumes : { containerPath = v.mount_point, readOnly = v.readOnly, sourceVolume = v.name }], var.mount_points)
 
   log_configuration_options = merge({
     "awslogs-group"         = aws_cloudwatch_log_group.this.name
@@ -313,28 +294,13 @@ resource "aws_ecs_service" "this" {
     security_groups  = var.security_groups
   }
 
-  # ECS Service Connect (opt-in). When enabled, registers this service in the given
-  # namespace and optionally advertises a discoverable endpoint other services can call
-  # by name. Backward compatible: disabled by default (no block emitted).
-  dynamic "service_connect_configuration" {
-    for_each = var.service_connect_enabled ? [1] : []
+  # Cloud Map service discovery (opt-in). Registers the service in a Cloud Map service so
+  # other services can reach it by a private DNS name (e.g. opencred.ucverify.local).
+  # Compatible with the CODE_DEPLOY (blue/green) controller. Disabled by default.
+  dynamic "service_registries" {
+    for_each = var.service_discovery_arn != "" ? [1] : []
     content {
-      enabled   = true
-      namespace = var.service_connect_namespace
-
-      # Advertise this service under a discovery name (client-callable). Omit the
-      # 'service' block for client-only services that just need to call others.
-      dynamic "service" {
-        for_each = var.service_connect_service_name != "" ? [1] : []
-        content {
-          port_name      = var.service_connect_port_name
-          discovery_name = var.service_connect_service_name
-          client_alias {
-            port     = var.service_connect_client_alias_port
-            dns_name = var.service_connect_service_name
-          }
-        }
-      }
+      registry_arn = var.service_discovery_arn
     }
   }
 
