@@ -179,14 +179,23 @@ locals {
   task_log_multiline_pattern = var.task_log_multiline_pattern != "" ? { "awslogs-multiline-pattern" = var.task_log_multiline_pattern } : null
   base_port_mappings         = var.task_container_port == 0 ? var.task_container_port_mappings : concat(var.task_container_port_mappings, [{ containerPort = var.task_container_port, hostPort = var.task_container_port, protocol = "tcp" }])
 
-  # Service Connect requires the target container port mapping to be NAMED so that
-  # service_connect_configuration.port_name can reference it. When enabled, add the
-  # "name" attribute to the existing mapping whose containerPort == service_connect_container_port
-  # (no new/duplicate port is added). Backward compatible: unchanged when disabled.
-  task_container_port_mappings = var.service_connect_enabled && var.service_connect_port_name != "" ? [
-    for m in local.base_port_mappings :
-    m.containerPort == var.service_connect_container_port ? merge(m, { name = var.service_connect_port_name }) : m
-  ] : local.base_port_mappings
+  # Whether to name the Service Connect target port mapping.
+  sc_name_ports = var.service_connect_enabled && var.service_connect_port_name != ""
+
+  # Rebuild each port mapping with explicit numeric ports so JSON encoding keeps ints
+  # (avoids type coercion from merging a string "name" into number fields). When Service
+  # Connect is enabled, the mapping matching service_connect_container_port also gets a
+  # "name" so service_connect_configuration.port_name can reference it.
+  task_container_port_mappings = [
+    for m in local.base_port_mappings : merge(
+      {
+        containerPort = tonumber(m.containerPort)
+        hostPort      = tonumber(m.hostPort)
+        protocol      = m.protocol
+      },
+      (local.sc_name_ports && tonumber(m.containerPort) == var.service_connect_container_port) ? { name = var.service_connect_port_name } : {}
+    )
+  ]
 
   task_container_mount_points = concat([for v in var.efs_volumes : { containerPath = v.mount_point, readOnly = v.readOnly, sourceVolume = v.name }], var.mount_points)
 
